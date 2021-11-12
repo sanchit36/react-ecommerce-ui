@@ -1,12 +1,14 @@
 import { Badge } from "@material-ui/core";
 import { Search, ShoppingCartOutlined } from "@material-ui/icons";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { mobile, tablet } from "../responsive";
 import { Wrapper } from "../styles/common";
 
 const Container = styled.div`
   height: 60px;
+  background-color: #fff;
   ${mobile({ height: "50px" })}
 `;
 
@@ -73,7 +75,9 @@ const MenuItem = styled.div`
   ${mobile({ fontSize: "12px", marginLeft: "10px" })}
 `;
 
-const Navbar = () => {
+const Navbar = ({ isLoggedIn = true }) => {
+  const navigate = useNavigate();
+
   return (
     <Container>
       <Wrapper>
@@ -86,16 +90,24 @@ const Navbar = () => {
             </SearchContainer>
           </Left>
           <Center>
-            <Logo>Centr.</Logo>
+            <Logo onClick={() => navigate("/")}>Centr.</Logo>
           </Center>
           <Right>
-            <MenuItem>REGISTER</MenuItem>
-            <MenuItem>SIGN IN</MenuItem>
-            <MenuItem>
-              <Badge badgeContent={4} color="secondary">
-                <ShoppingCartOutlined />
-              </Badge>
-            </MenuItem>
+            {!isLoggedIn && (
+              <>
+                <MenuItem onClick={() => navigate("/register")}>
+                  REGISTER
+                </MenuItem>
+                <MenuItem onClick={() => navigate("/login")}>SIGN IN</MenuItem>
+              </>
+            )}
+            {isLoggedIn && (
+              <MenuItem onClick={() => navigate("/cart")}>
+                <Badge badgeContent={4} color="secondary">
+                  <ShoppingCartOutlined />
+                </Badge>
+              </MenuItem>
+            )}
           </Right>
         </NavWrapper>
       </Wrapper>

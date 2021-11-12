@@ -1,10 +1,12 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
+import Navbar from "../components/Navbar";
 import { mobile, tablet } from "../responsive";
 import { Button } from "../styles/common";
 
 const Container = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 60px);
   background: linear-gradient(
       rgba(255, 255, 255, 0.5),
       rgba(255, 255, 255, 0.5)
@@ -42,7 +44,7 @@ const Input = styled.input`
   padding: 10px;
 `;
 
-const Link = styled.a`
+const LinkStyle = styled(Link)`
   margin: 5px 0px;
   font-size: 12px;
   text-decoration: none;
@@ -51,18 +53,23 @@ const Link = styled.a`
 
 const Login = () => {
   return (
-    <Container>
-      <Wrapper>
-        <Title>SIGN IN</Title>
-        <Form>
-          <Input placeholder="username" />
-          <Input placeholder="password" />
-          <Button style={{ width: "40%" }}>LOGIN</Button>
-          <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
-          <Link>CREATE A NEW ACCOUNT</Link>
-        </Form>
-      </Wrapper>
-    </Container>
+    <>
+      <Navbar isLoggedIn={false} />
+      <Container>
+        <Wrapper>
+          <Title>SIGN IN</Title>
+          <Form>
+            <Input placeholder="username" />
+            <Input placeholder="password" />
+            <Button style={{ width: "40%" }}>LOGIN</Button>
+            <LinkStyle to="/forget-password">
+              DO NOT YOU REMEMBER THE PASSWORD?
+            </LinkStyle>
+            <LinkStyle to="/register">CREATE A NEW ACCOUNT</LinkStyle>
+          </Form>
+        </Wrapper>
+      </Container>
+    </>
   );
 };
 
