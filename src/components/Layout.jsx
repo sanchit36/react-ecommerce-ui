@@ -15,13 +15,13 @@ const Wrapper = styled.div`
   flex: 1;
 `;
 
-const Layout = ({ children }) => {
+const Layout = ({ children, noNewsletter }) => {
   return (
     <Container>
       <Announcement />
       <Navbar />
       <Wrapper>{children}</Wrapper>
-      <Newsletter />
+      {!noNewsletter && <Newsletter />}
       <Footer />
     </Container>
   );

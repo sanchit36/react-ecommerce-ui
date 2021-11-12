@@ -2,16 +2,19 @@ import { Badge } from "@material-ui/core";
 import { Search, ShoppingCartOutlined } from "@material-ui/icons";
 import React from "react";
 import styled from "styled-components";
+import { mobile, tablet } from "../responsive";
+import { Wrapper } from "../styles/common";
 
 const Container = styled.div`
   height: 60px;
+  ${mobile({ height: "50px" })}
 `;
 
-const Wrapper = styled.div`
-  padding: 10px 25px;
+const NavWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  ${mobile({ padding: "10px 0px" })}
 `;
 
 const Left = styled.div`
@@ -23,6 +26,8 @@ const Left = styled.div`
 const Language = styled.span`
   font-size: 14px;
   cursor: pointer;
+  ${tablet({ display: "none" })}
+  ${mobile({ display: "none" })}
 `;
 
 const SearchContainer = styled.div`
@@ -31,11 +36,15 @@ const SearchContainer = styled.div`
   align-items: center;
   margin-left: 25px;
   padding: 5px;
+  ${tablet({ marginLeft: "0px" })}
+  ${mobile({ marginLeft: "0px" })}
 `;
 
 const Input = styled.input`
   border: none;
   outline: none;
+  ${tablet({ width: "120px" })}
+  ${mobile({ width: "50px" })}
 `;
 
 const Center = styled.div`
@@ -44,8 +53,9 @@ const Center = styled.div`
 `;
 
 const Logo = styled.h1`
-  text-align: center;
   font-weight: bold;
+  cursor: pointer;
+  ${mobile({ fontSize: "24px" })}
 `;
 
 const Right = styled.div`
@@ -53,37 +63,41 @@ const Right = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  ${mobile({ flex: 2, justifyContent: "center" })}
 `;
 
 const MenuItem = styled.div`
   font-size: 14px;
   cursor: pointer;
   margin-left: 25px;
+  ${mobile({ fontSize: "12px", marginLeft: "10px" })}
 `;
 
 const Navbar = () => {
   return (
     <Container>
       <Wrapper>
-        <Left>
-          <Language>EN</Language>
-          <SearchContainer>
-            <Input />
-            <Search style={{ color: "gray", cursor: "pointer" }} />
-          </SearchContainer>
-        </Left>
-        <Center>
-          <Logo>Centr.</Logo>
-        </Center>
-        <Right>
-          <MenuItem>REGISTER</MenuItem>
-          <MenuItem>SIGN IN</MenuItem>
-          <MenuItem>
-            <Badge badgeContent={4} color="secondary">
-              <ShoppingCartOutlined />
-            </Badge>
-          </MenuItem>
-        </Right>
+        <NavWrapper>
+          <Left>
+            <Language>EN</Language>
+            <SearchContainer>
+              <Input />
+              <Search style={{ color: "gray", cursor: "pointer" }} />
+            </SearchContainer>
+          </Left>
+          <Center>
+            <Logo>Centr.</Logo>
+          </Center>
+          <Right>
+            <MenuItem>REGISTER</MenuItem>
+            <MenuItem>SIGN IN</MenuItem>
+            <MenuItem>
+              <Badge badgeContent={4} color="secondary">
+                <ShoppingCartOutlined />
+              </Badge>
+            </MenuItem>
+          </Right>
+        </NavWrapper>
       </Wrapper>
     </Container>
   );

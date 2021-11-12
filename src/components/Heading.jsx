@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const Title = styled.h2`
-  padding: 40px 20px 10px;
+  padding: 40px 0px 10px;
   color: ${(props) => `${props.textColor}`};
   font-size: ${(props) => `${props.textSize}px`};
   font-weight: bold;
