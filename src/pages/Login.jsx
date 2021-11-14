@@ -66,9 +66,7 @@ const initialState = {
 };
 
 const Login = () => {
-  const { isFetching, errorMessage, token } = useSelector(
-    (state) => state.user
-  );
+  const { isFetching, errorMessage } = useSelector((state) => state.user);
 
   const [values, setValues] = useState(initialState);
   const dispatch = useDispatch();

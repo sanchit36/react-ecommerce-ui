@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import Announcement from "./Announcement";
-import Footer from "./Footer";
-import Navbar from "./Navbar";
-import Newsletter from "./Newsletter";
+import Announcement from "../components/Announcement";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import Newsletter from "../components/Newsletter";
 
 const Container = styled.div`
   min-height: 100vh;

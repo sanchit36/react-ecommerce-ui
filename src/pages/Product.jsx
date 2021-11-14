@@ -1,7 +1,7 @@
 import { Add, Remove } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Layout from "../components/Layout";
+import Layout from "../layout/Layout";
 import { Wrapper } from "../styles/common";
 import { mobile, tablet } from "../responsive";
 import { useParams } from "react-router";

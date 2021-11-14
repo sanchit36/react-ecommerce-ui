@@ -1,7 +1,7 @@
 import { Add, Remove } from "@material-ui/icons";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import Layout from "../components/Layout";
+import Layout from "../layout/Layout";
 import { tablet } from "../responsive";
 import StripeCheckout from "react-stripe-checkout";
 import { useEffect, useState } from "react";
@@ -181,7 +181,7 @@ const Cart = () => {
       } catch {}
     };
     stripeToken && makeRequest();
-  }, [stripeToken, cart.total, navigate]);
+  }, [stripeToken, cart, navigate]);
 
   return (
     <Layout noNewsletter>

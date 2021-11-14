@@ -11,11 +11,13 @@ import {
 import storage from "redux-persist/lib/storage";
 
 import cartReducer from "./cartReducer";
+import productReducer from "./productReducer";
 import userReducer from "./userReducer";
 
 const rootReducer = combineReducers({
   user: userReducer,
   cart: cartReducer,
+  product: productReducer,
 });
 
 const persistConfig = {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Layout from "../components/Layout";
+import Layout from "../layout/Layout";
 import Heading from "../components/Heading";
 import Products from "../components/Products";
 import { Wrapper } from "../styles/common";
