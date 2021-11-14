@@ -73,7 +73,7 @@ const ProductItem = ({ item }) => {
   return (
     <Container onClick={() => navigate(`/product/${item.id}`)}>
       <Circle />
-      <Image src={item.img} />
+      <Image src={item.image} />
       <Info>
         <Icon>
           <ShoppingCartOutlined />

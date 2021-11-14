@@ -1,5 +1,9 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { authUser } from "../api/apiCall";
 import Navbar from "../components/Navbar";
 import { mobile, tablet } from "../responsive";
 import { Button } from "../styles/common";
@@ -60,7 +64,35 @@ const LinkStyle = styled(Link)`
   cursor: pointer;
 `;
 
+const initialState = {
+  firstName: "",
+  lastName: "",
+  username: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
+
 const Register = () => {
+  const { isFetching } = useSelector((state) => state.user);
+
+  const [values, setValues] = useState(initialState);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setValues({ ...values, [name]: value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    authUser(dispatch, "/auth/signup", values).then(() => {
+      setValues(initialState);
+      navigate("/");
+    });
+  };
+
   return (
     <>
       <Navbar isLoggedIn={false} />
@@ -68,17 +100,62 @@ const Register = () => {
         <Wrapper>
           <Title>CREATE AN ACCOUNT</Title>
           <Form>
-            <Input placeholder="first name" required />
-            <Input placeholder="last name" required />
-            <Input placeholder="username" required />
-            <Input type="email" placeholder="email" required />
-            <Input type="password" placeholder="password" required />
-            <Input type="password" placeholder="confirm password" required />
+            <Input
+              name="firstName"
+              value={values.firstName}
+              onChange={handleChange}
+              placeholder="first name"
+              required
+            />
+            <Input
+              name="lastName"
+              value={values.lastName}
+              onChange={handleChange}
+              placeholder="last name"
+              required
+            />
+            <Input
+              name="username"
+              value={values.username}
+              onChange={handleChange}
+              placeholder="username"
+              required
+            />
+            <Input
+              name="email"
+              value={values.email}
+              onChange={handleChange}
+              type="email"
+              placeholder="email"
+              required
+            />
+            <Input
+              name="password"
+              value={values.password}
+              onChange={handleChange}
+              type="password"
+              placeholder="password"
+              required
+            />
+            <Input
+              name="confirmPassword"
+              value={values.confirmPassword}
+              onChange={handleChange}
+              type="password"
+              placeholder="confirm password"
+              required
+            />
             <Agreement>
               By creating an account, I consent to the processing of my personal
               data in accordance with the <strong>PRIVACY POLICY</strong>
             </Agreement>
-            <Button style={{ width: "40%" }}>CREATE</Button>
+            <Button
+              disabled={isFetching}
+              onClick={handleSubmit}
+              style={{ width: "40%" }}
+            >
+              {isFetching ? "..." : "CREATE"}
+            </Button>
           </Form>
           <LinkStyle to="/login">ALREADY HAVE A ACCOUNT? LOGIN</LinkStyle>
         </Wrapper>

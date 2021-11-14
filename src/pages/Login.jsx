@@ -1,5 +1,8 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { authUser } from "../api/apiCall";
 import Navbar from "../components/Navbar";
 import { mobile, tablet } from "../responsive";
 import { Button } from "../styles/common";
@@ -51,7 +54,36 @@ const LinkStyle = styled(Link)`
   cursor: pointer;
 `;
 
+const ErrorMessage = styled.p`
+  font-size: 14px;
+  color: red;
+  margin: 5px 0;
+`;
+
+const initialState = {
+  email: "",
+  password: "",
+};
+
 const Login = () => {
+  const { isFetching, errorMessage, token } = useSelector(
+    (state) => state.user
+  );
+
+  const [values, setValues] = useState(initialState);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setValues({ ...values, [name]: value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    authUser(dispatch, "/auth/signin", values, () => navigate("/"));
+  };
+
   return (
     <>
       <Navbar isLoggedIn={false} />
@@ -59,9 +91,28 @@ const Login = () => {
         <Wrapper>
           <Title>SIGN IN</Title>
           <Form>
-            <Input placeholder="username" />
-            <Input placeholder="password" />
-            <Button style={{ width: "40%" }}>LOGIN</Button>
+            <Input
+              name="email"
+              value={values.email}
+              onChange={handleChange}
+              type="email"
+              placeholder="email"
+            />
+            <Input
+              name="password"
+              value={values.password}
+              onChange={handleChange}
+              type="password"
+              placeholder="password"
+            />
+            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+            <Button
+              disabled={isFetching}
+              onClick={handleSubmit}
+              style={{ width: "40%" }}
+            >
+              LOGIN
+            </Button>
             <LinkStyle to="/forget-password">
               DO NOT YOU REMEMBER THE PASSWORD?
             </LinkStyle>

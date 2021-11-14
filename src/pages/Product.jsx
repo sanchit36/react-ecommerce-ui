@@ -1,9 +1,13 @@
 import { Add, Remove } from "@material-ui/icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Layout from "../components/Layout";
 import { Wrapper } from "../styles/common";
 import { mobile, tablet } from "../responsive";
+import { useParams } from "react-router";
+import storeApi from "../api/store-api";
+import { useDispatch } from "react-redux";
+import { addProduct } from "../redux/cartReducer";
 
 const ProductWrapper = styled.div`
   padding: 50px 0px;
@@ -68,6 +72,7 @@ const FilterColor = styled.div`
   background-color: ${(props) => props.color};
   margin: 0px 5px;
   cursor: pointer;
+  border: ${(props) => (props.selected ? "2px solid teal" : "none")};
 `;
 
 const FilterSize = styled.select`
@@ -116,48 +121,86 @@ const Button = styled.button`
 `;
 
 const Product = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState();
+  const [quantity, setQuantity] = useState(1);
+  const [colorState, setColorState] = useState("");
+  const [size, setSize] = useState("");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const response = await storeApi.get("/products/" + id);
+        setProduct(response.data);
+        setSize(response.data.sizes[0].name);
+        setColorState(response.data.colors[0].name);
+      } catch (e) {}
+    };
+    getProduct();
+  }, [id]);
+
+  const handleQuantity = (type) => {
+    if (type === "dec") {
+      quantity > 1 && setQuantity(quantity - 1);
+    } else {
+      setQuantity(quantity + 1);
+    }
+  };
+
+  const handleClick = () => {
+    dispatch(addProduct({ ...product, quantity, color: colorState, size }));
+  };
+
+  if (!product) return null;
+
   return (
     <Layout>
       <Wrapper>
         <ProductWrapper>
           <ImageContainer>
-            <Image src="https://i.ibb.co/S6qMxwr/jean.jpg" />
+            <Image src={product.image} />
           </ImageContainer>
           <InfoContainer>
-            <Title>Denim Jumpsuit</Title>
-            <Price>$ 20</Price>
-            <Desc>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-              venenatis, dolor in finibus malesuada, lectus ipsum porta nunc, at
-              iaculis arcu nisi sed mauris. Nulla fermentum vestibulum ex, eget
-              tristique tortor pretium ut. Curabitur elit justo, consequat id
-              condimentum ac, volutpat ornare.
-            </Desc>
+            <Title>{product.title}</Title>
+            <Price>$ {product.price}</Price>
+            <Desc>{product.description}</Desc>
             <FilterContainer>
               <Filter>
                 <FilterTitle>Color</FilterTitle>
-                <FilterColor color="black" />
-                <FilterColor color="darkblue" />
-                <FilterColor color="gray" />
+                {product.colors.map((color) => (
+                  <FilterColor
+                    selected={colorState === color.name}
+                    key={color._id}
+                    color={color.name}
+                    onClick={() => setColorState(color.name)}
+                  />
+                ))}
               </Filter>
               <Filter>
                 <FilterTitle>Size</FilterTitle>
-                <FilterSize>
-                  <FilterSizeOption>XS</FilterSizeOption>
-                  <FilterSizeOption>S</FilterSizeOption>
-                  <FilterSizeOption>M</FilterSizeOption>
-                  <FilterSizeOption>L</FilterSizeOption>
-                  <FilterSizeOption>XL</FilterSizeOption>
+                <FilterSize onChange={(e) => setSize(e.target.value)}>
+                  {product.sizes.map((size) => (
+                    <FilterSizeOption value={size.name} key={size._id}>
+                      {size.name.toUpperCase()}
+                    </FilterSizeOption>
+                  ))}
                 </FilterSize>
               </Filter>
             </FilterContainer>
             <AddContainer>
               <AmountContainer>
-                <Remove style={{ cursor: "pointer" }} />
-                <Amount>1</Amount>
-                <Add style={{ cursor: "pointer" }} />
+                <Remove
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleQuantity("dec")}
+                />
+                <Amount>{quantity}</Amount>
+                <Add
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleQuantity("inc")}
+                />
               </AmountContainer>
-              <Button>ADD TO CART</Button>
+              <Button onClick={handleClick}>ADD TO CART</Button>
             </AddContainer>
           </InfoContainer>
         </ProductWrapper>

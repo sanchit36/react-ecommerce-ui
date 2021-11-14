@@ -1,8 +1,10 @@
 import { Badge } from "@material-ui/core";
 import { Search, ShoppingCartOutlined } from "@material-ui/icons";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { logoutUser } from "../api/apiCall";
 import { mobile, tablet } from "../responsive";
 import { Wrapper } from "../styles/common";
 
@@ -75,8 +77,11 @@ const MenuItem = styled.div`
   ${mobile({ fontSize: "12px", marginLeft: "10px" })}
 `;
 
-const Navbar = ({ isLoggedIn = true }) => {
+const Navbar = () => {
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const quantity = useSelector((state) => state.cart.quantity);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   return (
     <Container>
@@ -93,7 +98,7 @@ const Navbar = ({ isLoggedIn = true }) => {
             <Logo onClick={() => navigate("/")}>Centr.</Logo>
           </Center>
           <Right>
-            {!isLoggedIn && (
+            {!currentUser && (
               <>
                 <MenuItem onClick={() => navigate("/register")}>
                   REGISTER
@@ -101,12 +106,17 @@ const Navbar = ({ isLoggedIn = true }) => {
                 <MenuItem onClick={() => navigate("/login")}>SIGN IN</MenuItem>
               </>
             )}
-            {isLoggedIn && (
-              <MenuItem onClick={() => navigate("/cart")}>
-                <Badge badgeContent={4} color="secondary">
-                  <ShoppingCartOutlined />
-                </Badge>
-              </MenuItem>
+            {currentUser && (
+              <>
+                <MenuItem onClick={() => logoutUser(dispatch)}>
+                  LOG OUT
+                </MenuItem>
+                <MenuItem onClick={() => navigate("/cart")}>
+                  <Badge badgeContent={quantity} color="secondary">
+                    <ShoppingCartOutlined />
+                  </Badge>
+                </MenuItem>
+              </>
             )}
           </Right>
         </NavWrapper>
