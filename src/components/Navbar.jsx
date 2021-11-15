@@ -74,6 +74,7 @@ const MenuItem = styled.div`
   font-size: 14px;
   cursor: pointer;
   margin-left: 25px;
+  text-transform: uppercase;
   ${mobile({ fontSize: "12px", marginLeft: "10px" })}
 `;
 
@@ -98,7 +99,7 @@ const Navbar = () => {
             <Logo onClick={() => navigate("/")}>Centr.</Logo>
           </Center>
           <Right>
-            {currentUser == null && (
+            {!currentUser && (
               <>
                 <MenuItem onClick={() => navigate("/register")}>
                   REGISTER
@@ -108,6 +109,11 @@ const Navbar = () => {
             )}
             {currentUser && (
               <>
+                {currentUser.isAdmin && (
+                  <MenuItem onClick={() => navigate("/dashboard")}>
+                    DASHBOARD
+                  </MenuItem>
+                )}
                 <MenuItem onClick={() => logoutUser(dispatch)}>
                   LOG OUT
                 </MenuItem>

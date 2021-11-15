@@ -23,6 +23,7 @@ import ProductList from "./pages/ProductList";
 import Register from "./pages/Register";
 import Success from "./pages/Success";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import AdminRoute from "./routes/AdminRoute";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -73,13 +74,62 @@ const App = () => {
         />
         {/* Admin Routes */}
         <Route path="/dashboard">
-          <Route path="" element={<Dashboard />} />
-          <Route path="products" element={<DashboardProductList />} />
-          <Route path="newproduct" element={<DashboardNewProduct />} />
-          <Route path="products/:id" element={<DashboardProduct />} />
-          <Route path="users" element={<DashboardUserList />} />
-          <Route path="newuser" element={<DashboardNewUser />} />
-          <Route path="users/:id" element={<DashboardUser />} />
+          <Route
+            path=""
+            element={
+              <AdminRoute>
+                <Dashboard />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="products"
+            element={
+              <AdminRoute>
+                <DashboardProductList />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="newproduct"
+            element={
+              <AdminRoute>
+                <DashboardNewProduct />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="products/:id"
+            element={
+              <AdminRoute>
+                <DashboardProduct />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="users"
+            element={
+              <AdminRoute>
+                <DashboardUserList />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="newuser"
+            element={
+              <AdminRoute>
+                <DashboardNewUser />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="users/:id"
+            element={
+              <AdminRoute>
+                <DashboardUser />
+              </AdminRoute>
+            }
+          />
         </Route>
       </Routes>
     </>
