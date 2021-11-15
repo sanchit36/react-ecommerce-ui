@@ -9,6 +9,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import { productApi } from "../services/product";
 
 import cartReducer from "./cartReducer";
 import productReducer from "./productReducer";
@@ -18,12 +19,14 @@ const rootReducer = combineReducers({
   user: userReducer,
   cart: cartReducer,
   product: productReducer,
+  [productApi.reducerPath]: productApi.reducer,
 });
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
+  whitelist: ["user", "cart"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
