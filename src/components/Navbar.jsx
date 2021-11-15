@@ -98,7 +98,7 @@ const Navbar = () => {
             <Logo onClick={() => navigate("/")}>Centr.</Logo>
           </Center>
           <Right>
-            {!currentUser && (
+            {currentUser == null && (
               <>
                 <MenuItem onClick={() => navigate("/register")}>
                   REGISTER

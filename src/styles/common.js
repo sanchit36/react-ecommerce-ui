@@ -17,4 +17,5 @@ export const Button = styled.button`
   color: white;
   cursor: pointer;
   margin-bottom: 10px;
+  opacity: ${(props) => props.disabled && 0.5};
 `;

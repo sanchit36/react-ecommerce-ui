@@ -1,3 +1,4 @@
+import { getCart } from "../redux/cartReducer";
 import {
   addProductFailure,
   addProductStart,
@@ -31,16 +32,19 @@ export const authUser = async (dispatch, routeName, userCredentials, cb) => {
   dispatch(loginStart());
   try {
     const response = await storeApi.post(routeName, userCredentials);
-    localStorage.setItem("token", response.data.token);
-    dispatch(loginSuccess(response.data));
+    const { user, token, cart } = response.data;
+    localStorage.setItem("token", token);
+    dispatch(loginSuccess({ user, token }));
+    dispatch(getCart(cart));
     if (cb) cb();
+    return response.data;
   } catch (err) {
-    console.log({ err });
     let error = err;
     if (!error.response) {
-      throw err;
+      throw new Error(err);
     }
-    dispatch(loginFailure(error.response.data));
+    dispatch(loginFailure(error?.response?.data));
+    throw new Error(error.response.data.message);
   }
 };
 
@@ -63,7 +67,10 @@ export const getUser = async (dispatch, token) => {
   dispatch(getUserStart());
   try {
     const response = await storeApi.get("/users/me");
-    dispatch(getUserSuccess({ user: response.data, token }));
+    const user = response.data;
+    console.log(user);
+    dispatch(getUserSuccess({ user, token }));
+    return { user };
   } catch (err) {
     console.log(err);
     let error = err;
@@ -103,6 +110,7 @@ export const updateProduct = async (id, product, dispatch) => {
     dispatch(updateProductFailure());
   }
 };
+
 export const addProduct = async (product, dispatch) => {
   dispatch(addProductStart());
   try {

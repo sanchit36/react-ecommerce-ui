@@ -1,7 +1,9 @@
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route } from "react-router-dom";
 import { getUser } from "./api/apiCall";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Admin pages
 import Dashboard from "./pages/admin/Dashboard";
@@ -24,50 +26,63 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 
 const App = () => {
   const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.currentUser);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token != null) {
+    if (token != null && !currentUser) {
       getUser(dispatch, token);
     }
-  }, [dispatch]);
+  }, [dispatch, currentUser]);
 
   return (
-    <Routes>
-      {/* Client Routes */}
-      <Route path="/" element={<Home />} />
-      <Route path="/cart" element={<Cart />} />
-      <Route path="/success" element={<Success />} />
-      <Route
-        path="/login"
-        element={
-          <ProtectedRoute>
-            <Login />
-          </ProtectedRoute>
-        }
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
       />
-      <Route path="/product/:id" element={<Product />} />
-      <Route path="/products" element={<ProductList />} />
-      <Route path="/products/:category" element={<ProductList />} />
-      <Route
-        path="/register"
-        element={
-          <ProtectedRoute>
-            <Register />
-          </ProtectedRoute>
-        }
-      />
-      {/* Admin Routes */}
-      <Route path="/dashboard">
-        <Route path="" element={<Dashboard />} />
-        <Route path="products" element={<DashboardProductList />} />
-        <Route path="newproduct" element={<DashboardNewProduct />} />
-        <Route path="products/:id" element={<DashboardProduct />} />
-        <Route path="users" element={<DashboardUserList />} />
-        <Route path="newuser" element={<DashboardNewUser />} />
-        <Route path="users/:id" element={<DashboardUser />} />
-      </Route>
-    </Routes>
+      <Routes>
+        {/* Client Routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/success" element={<Success />} />
+        <Route
+          path="/login"
+          element={
+            <ProtectedRoute>
+              <Login />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/product/:id" element={<Product />} />
+        <Route path="/products" element={<ProductList />} />
+        <Route path="/products/:category" element={<ProductList />} />
+        <Route
+          path="/register"
+          element={
+            <ProtectedRoute>
+              <Register />
+            </ProtectedRoute>
+          }
+        />
+        {/* Admin Routes */}
+        <Route path="/dashboard">
+          <Route path="" element={<Dashboard />} />
+          <Route path="products" element={<DashboardProductList />} />
+          <Route path="newproduct" element={<DashboardNewProduct />} />
+          <Route path="products/:id" element={<DashboardProduct />} />
+          <Route path="users" element={<DashboardUserList />} />
+          <Route path="newuser" element={<DashboardNewUser />} />
+          <Route path="users/:id" element={<DashboardUser />} />
+        </Route>
+      </Routes>
+    </>
   );
 };
 
