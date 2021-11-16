@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import storeApi from "../api/store-api";
+import { getProducts } from "../api/apiCall";
 import ProductItem from "./ProductItem";
 
 const Container = styled.div`
@@ -10,32 +11,23 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
-const Products = ({ cat, filters }) => {
-  const [products, setProducts] = useState([]);
-  console.log(cat, filters);
+const Products = ({ cat, filters, page }) => {
+  const products = useSelector((state) => state.product.products);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    let url = "/products?";
-
+    console.log("HEELLOOOOO");
+    let params = "";
     if (filters) {
       const { size, color, sort } = filters;
-      url = cat ? url + `&category=${cat}` : url;
-      url = size && size !== "size" ? url + `&size=${size}` : url;
-      url = color && color !== "color" ? url + `&color=${color}` : url;
-      url = sort ? url + `&sortBy=${sort}` : url;
+      params = cat ? params + `&category=${cat}` : params;
+      params = size && size !== "size" ? params + `&size=${size}` : params;
+      params = color && color !== "color" ? params + `&color=${color}` : params;
+      params = sort ? params + `&sortBy=${sort}` : params;
     }
-
-    const getProducts = async () => {
-      try {
-        const response = await storeApi.get(url);
-        console.log(response.data);
-        setProducts(response.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getProducts();
-  }, [filters, cat]);
+    console.log(params);
+    getProducts(page, dispatch, params);
+  }, [filters, cat, page, dispatch]);
 
   return (
     <Container>

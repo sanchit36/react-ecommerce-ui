@@ -1,53 +1,115 @@
+import { useState } from "react";
+import { addUser } from "../../api/apiCall";
 import DashboardLayout from "../../layout/DashboardLayout";
 import "./newUser.css";
+import { useDispatch } from "react-redux";
 
 const NewUser = () => {
+  const [user, setUser] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    password: "",
+    isAdmin: "false",
+  });
+
+  const dispatch = useDispatch();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    addUser(user, dispatch, () => {
+      setUser({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        password: "",
+        isAdmin: "false",
+      });
+    });
+  };
+
   return (
     <DashboardLayout>
       <div className="newUser">
         <h1 className="newUserTitle">New User</h1>
-        <form className="newUserForm">
+        <form className="newUserForm" onSubmit={onSubmit}>
           <div className="newUserItem">
             <label>Username</label>
-            <input type="text" placeholder="john" />
+            <input
+              name="username"
+              value={user.username}
+              onChange={handleChange}
+              type="text"
+              placeholder="john"
+            />
           </div>
           <div className="newUserItem">
-            <label>Full Name</label>
-            <input type="text" placeholder="John Smith" />
+            <label>First Name</label>
+            <input
+              name="firstName"
+              value={user.firstName}
+              onChange={handleChange}
+              type="text"
+              placeholder="John Smith"
+            />
+          </div>
+          <div className="newUserItem">
+            <label>Last Name</label>
+            <input
+              name="lastName"
+              value={user.lastName}
+              onChange={handleChange}
+              type="text"
+              placeholder="John Smith"
+            />
           </div>
           <div className="newUserItem">
             <label>Email</label>
-            <input type="email" placeholder="john@gmail.com" />
+            <input
+              name="email"
+              value={user.email}
+              onChange={handleChange}
+              type="email"
+              placeholder="john@gmail.com"
+            />
           </div>
           <div className="newUserItem">
             <label>Password</label>
-            <input type="password" placeholder="password" />
+            <input
+              name="password"
+              value={user.password}
+              onChange={handleChange}
+              type="password"
+              placeholder="password"
+            />
           </div>
           <div className="newUserItem">
-            <label>Phone</label>
-            <input type="text" placeholder="+1 123 456 78" />
-          </div>
-          <div className="newUserItem">
-            <label>Address</label>
-            <input type="text" placeholder="New York | USA" />
-          </div>
-          <div className="newUserItem">
-            <label>Gender</label>
+            <label>Is Admin</label>
             <div className="newUserGender">
-              <input type="radio" name="gender" id="male" value="male" />
-              <label for="male">Male</label>
-              <input type="radio" name="gender" id="female" value="female" />
-              <label for="female">Female</label>
-              <input type="radio" name="gender" id="other" value="other" />
-              <label for="other">Other</label>
+              <input
+                name="isAdmin"
+                value={user.isAdmin}
+                onChange={handleChange}
+                type="radio"
+                id="true"
+              />
+              <label htmlFor="true">True</label>
+              <input
+                type="radio"
+                name="isAdmin"
+                value={user.isAdmin}
+                onChange={handleChange}
+                id="false"
+              />
+              <label htmlFor="false">False</label>
             </div>
-          </div>
-          <div className="newUserItem">
-            <label>Active</label>
-            <select className="newUserSelect" name="active" id="active">
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
           </div>
           <button className="newUserButton">Create</button>
         </form>

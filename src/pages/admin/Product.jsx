@@ -1,12 +1,13 @@
 import DashboardLayout from "../../layout/DashboardLayout";
-import { Link } from "react-router-dom";
 import Chart from "../../components/chart/Chart";
-import { productData } from "../../dummyData";
-import { useParams } from "react-router-dom";
-import { useGetProductByIdQuery } from "../../services/product";
+import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import ProductForm from "../../components/ProductForm";
 import { updateProduct } from "../../api/apiCall";
+import { useEffect, useMemo, useState } from "react";
+import storeApi from "../../api/store-api";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   flex: 4;
@@ -70,14 +71,54 @@ const Button = styled.button`
 
 const Product = () => {
   const { id } = useParams();
-  const { data, error, isLoading } = useGetProductByIdQuery(id);
+  const product = useSelector((state) =>
+    state.product.products.find((product) => product.id === id)
+  );
+
+  const [pStats, setPStats] = useState([]);
+  const MONTHS = useMemo(
+    () => [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Agu",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
+    []
+  );
+
+  useEffect(() => {
+    const getStats = async () => {
+      try {
+        const res = await storeApi.get("orders/income?pid=" + product.id);
+        const list = res.data.sort((a, b) => {
+          return a.id - b.id;
+        });
+        list.map((item) =>
+          setPStats((prev) => [
+            ...prev,
+            { name: MONTHS[item.id - 1], Sales: item.total },
+          ])
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getStats();
+  }, [product.id, MONTHS]);
+
+  if (!product) return <h4>Something is wrong</h4>;
 
   const handleValues = (value) => {
     return [...value.map((category) => category.name)].join(",");
   };
-
-  if (isLoading) return <h1>Loading...</h1>;
-  if (error) return <h1>Some error occurred</h1>;
 
   return (
     <DashboardLayout>
@@ -91,38 +132,45 @@ const Product = () => {
         <Wrapper>
           <RightContainer>
             <div>
-              <Chart
-                data={productData}
-                dataKey="Sales"
-                title="Sales Performance"
-              />
+              <Chart data={pStats} dataKey="Sales" title="Sales Performance" />
             </div>
             <Card>
               <div style={{ display: "flex" }}>
                 <div style={{ flex: 1 }}>
-                  <h3>{data.title}</h3>
-                  <Image src={data.image} alt={data.title} />
+                  <h3>{product.title}</h3>
+                  <Image src={product.image} alt={product.title} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ marginBottom: "20px" }}>
-                    <strong>ID:</strong> <p>{data.id}</p>
+                    <strong>ID:</strong> <p>{product.id}</p>
                   </div>
                   <div style={{ marginBottom: "20px" }}>
-                    <strong>Description:</strong> <p>{data.description}</p>
+                    <strong>Price:</strong> <p>{product.price}</p>
+                  </div>
+                  <div style={{ marginBottom: "20px" }}>
+                    <strong>Description:</strong> <p>{product.description}</p>
+                  </div>
+                  <div style={{ marginBottom: "20px" }}>
+                    <strong>Categories:</strong>
+                    <div>
+                      {product.categories?.map((cat) => (
+                        <span key={cat._id}>{cat.name} </span>
+                      ))}
+                    </div>
                   </div>
                   <div style={{ marginBottom: "20px" }}>
                     <strong>Colors:</strong>
                     <div>
-                      {data?.colors?.map((color) => (
+                      {product.colors?.map((color) => (
                         <Color color={color.name} key={color._id} />
                       ))}
                     </div>
                   </div>
-                  {data?.sizes?.length > 0 && (
+                  {product.sizes?.length > 0 && (
                     <div style={{ marginBottom: "20px" }}>
                       <strong>Sizes:</strong>
                       <div>
-                        {data.sizes?.map((size) => (
+                        {product.sizes?.map((size) => (
                           <span key={size._id}>{size.name} </span>
                         ))}
                       </div>
@@ -136,17 +184,21 @@ const Product = () => {
             <ProductForm
               buttonText="Update"
               initialState={{
-                title: data.title,
-                description: data.description,
-                price: data.price,
-                categories: handleValues(data.categories),
-                colors: handleValues(data.colors),
-                sizes: handleValues(data.sizes),
+                title: product.title,
+                description: product.description,
+                price: product.price,
+                categories: handleValues(product.categories),
+                colors: handleValues(product.colors),
+                sizes: handleValues(product.sizes),
               }}
-              fileUrl={data.image}
-              onSubmit={(product, dispatch) =>
-                updateProduct(id, product, dispatch)
-              }
+              fileUrl={product.image}
+              onSubmit={(product, dispatch) => {
+                toast.promise(updateProduct(id, product, dispatch), {
+                  pending: "Trying to Update Product",
+                  success: "Product updated successfully",
+                  rejected: "Try again, something went wrong",
+                });
+              }}
             />
           </LeftContainer>
         </Wrapper>

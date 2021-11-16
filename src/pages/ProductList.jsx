@@ -6,6 +6,9 @@ import Products from "../components/Products";
 import { Wrapper } from "../styles/common";
 import { tablet } from "../responsive";
 import { useParams } from "react-router";
+import Pagination from "../components/Pagination";
+import useQuery from "../hooks/useQuery";
+import { useSelector } from "react-redux";
 
 const FilterContainer = styled.div`
   display: flex;
@@ -38,10 +41,14 @@ const Select = styled.select`
 const Option = styled.option``;
 
 const ProductList = () => {
+  const { hasNext, hasPrev } = useSelector((state) => state.product);
   const { category } = useParams();
   const [filters, setFilters] = useState({
     sort: "newest",
   });
+
+  const query = useQuery();
+  const page = Number(query.get("page") || 1);
 
   const handleFilters = (e) => {
     const { name, value } = e.target;
@@ -82,7 +89,13 @@ const ProductList = () => {
             </Select>
           </Filter>
         </FilterContainer>
-        <Products cat={category} filters={filters} />
+        <Products cat={category} filters={filters} page={page} />
+        <Pagination
+          url={"/products"}
+          page={page}
+          hasNext={hasNext}
+          hasPrev={hasPrev}
+        />
       </Wrapper>
     </Layout>
   );

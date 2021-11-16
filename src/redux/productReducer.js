@@ -3,6 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 export const productSlice = createSlice({
   name: "product",
   initialState: {
+    totalPages: 0,
+    hasNext: false,
+    hasPrev: false,
     products: [],
     isFetching: false,
     error: false,
@@ -15,7 +18,10 @@ export const productSlice = createSlice({
     },
     getProductSuccess: (state, action) => {
       state.isFetching = false;
-      state.products = action.payload;
+      state.totalPages = action.payload.totalPages;
+      state.hasNext = action.payload.hasNext;
+      state.hasPrev = action.payload.hasPrev;
+      state.products = action.payload.products;
     },
     getProductFailure: (state) => {
       state.isFetching = false;

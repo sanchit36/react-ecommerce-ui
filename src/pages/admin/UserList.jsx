@@ -1,81 +1,46 @@
-import { DataGrid } from "@mui/x-data-grid";
-import { DeleteOutline } from "@material-ui/icons";
-import { userRows } from "../../dummyData";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect } from "react";
 import DashboardLayout from "../../layout/DashboardLayout";
-import DataListItem from "../../components/DataListItem";
-import styled from "styled-components";
-
-const ListEdit = styled.button`
-  border: none;
-  border-radius: 10px;
-  padding: 5px 10px;
-  background-color: #3bb077;
-  color: white;
-  cursor: pointer;
-  margin-right: 20px;
-`;
+import { useDispatch, useSelector } from "react-redux";
+import useQuery from "../../hooks/useQuery";
+import { deleteUser, getUsers } from "../../api/apiCall";
+import DataList from "../../components/DataList";
+import { Typography } from "@material-ui/core";
 
 const UserList = () => {
-  const [data, setData] = useState(userRows);
+  const { users, hasNext, hasPrev, isFetching, error } = useSelector(
+    (state) => state.user
+  );
+  const query = useQuery();
+  const page = Number(query.get("page") || 1);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getUsers(page, dispatch);
+  }, [page, dispatch]);
 
   const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
+    deleteUser(id, dispatch);
   };
-
-  const columns = [
-    { field: "id", headerName: "ID", width: 90 },
-    {
-      field: "user",
-      headerName: "User",
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <DataListItem image={params.row.avatar} title={params.row.username} />
-        );
-      },
-    },
-    { field: "email", headerName: "Email", width: 200 },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 120,
-    },
-    {
-      field: "transaction",
-      headerName: "Transaction Volume",
-      width: 160,
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <>
-            <Link to={`${params.row.id}`}>
-              <ListEdit>Edit</ListEdit>
-            </Link>
-            <DeleteOutline
-              style={{ color: "red", cursor: "pointer" }}
-              onClick={() => handleDelete(params.row.id)}
-            />
-          </>
-        );
-      },
-    },
-  ];
 
   return (
     <DashboardLayout>
-      <DataGrid
-        rows={data}
-        disableSelectionOnClick
-        columns={columns}
-        pageSize={8}
-        checkboxSelection
-      />
+      {isFetching && <Typography variant="h5">loading...</Typography>}
+      {error && <Typography variant="h5">Some error occurred</Typography>}
+      {!isFetching && !error && (
+        <DataList
+          item="users"
+          data={users}
+          handleDelete={handleDelete}
+          handleClick={(navigate, item) =>
+            navigate(`/dashboard/users/${item.id}`, {
+              state: { data: item },
+            })
+          }
+          page={page}
+          hasPrev={hasPrev}
+          hasNext={hasNext}
+        />
+      )}
     </DashboardLayout>
   );
 };

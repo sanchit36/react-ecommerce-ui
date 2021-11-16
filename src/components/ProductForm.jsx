@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
+  margin: 20px 0px;
 `;
 
 const FormItem = styled.div`
@@ -33,8 +33,13 @@ const FormItemInput = styled.input`
   padding: 10px;
 `;
 
+const FormItemTextArea = styled.textarea`
+  padding: 10px;
+`;
+
 const AddButton = styled.button`
-  width: 50%;
+  width: 100%;
+  max-width: 500px;
   margin-top: 10px;
   padding: 10px 30px;
   border: none;
@@ -60,9 +65,19 @@ const ProductForm = ({ initialState, fileUrl, buttonText, onSubmit }) => {
     return [...value.split(",")].map((item) => ({ name: item }));
   };
 
+  const clearValues = () => {
+    setInputs({
+      title: "",
+      description: "",
+      price: "",
+      categories: "",
+      colors: "",
+      sizes: "",
+    });
+  };
+
   const handleClick = (e) => {
     e.preventDefault();
-    console.log(fileUrl);
 
     if (!file && !fileUrl) return;
 
@@ -74,8 +89,7 @@ const ProductForm = ({ initialState, fileUrl, buttonText, onSubmit }) => {
         colors: handleMultiple(inputs.colors),
         sizes: handleMultiple(inputs.sizes),
       };
-      console.log(product);
-      onSubmit(product, dispatch);
+      onSubmit(product, dispatch, clearValues);
       return;
     }
 
@@ -83,8 +97,6 @@ const ProductForm = ({ initialState, fileUrl, buttonText, onSubmit }) => {
     const storage = getStorage(app);
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, file);
-
-    console("hello");
 
     uploadTask.on(
       "state_changed",
@@ -142,7 +154,7 @@ const ProductForm = ({ initialState, fileUrl, buttonText, onSubmit }) => {
       </FormItem>
       <FormItem>
         <FormItemLable>Description</FormItemLable>
-        <textarea
+        <FormItemTextArea
           rows="20"
           placeholder="Enter your description"
           name="description"

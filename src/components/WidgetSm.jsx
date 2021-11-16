@@ -19,7 +19,7 @@ const WidgetSm = () => {
     const getUsers = async () => {
       try {
         const res = await storeApi.get("users/?new=true");
-        setUsers(res.data);
+        setUsers(res.data.users);
       } catch {}
     };
     getUsers();

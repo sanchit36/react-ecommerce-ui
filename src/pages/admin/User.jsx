@@ -1,16 +1,103 @@
-import {
-  CalendarToday,
-  LocationSearching,
-  MailOutline,
-  PermIdentity,
-  PhoneAndroid,
-  Publish,
-} from "@material-ui/icons";
-import { Link } from "react-router-dom";
+import { MailOutline, PermIdentity, Publish } from "@material-ui/icons";
+import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import DashboardLayout from "../../layout/DashboardLayout";
 import "./user.css";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import app from "../../firebase";
+import { updateUser } from "../../api/apiCall";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const User = () => {
+  const { id } = useParams();
+  const user = useSelector((state) =>
+    state.user.users.find((user) => user.id === id)
+  );
+
+  const [inputs, setInputs] = useState({
+    firstName: user.firstName,
+    lastName: user.lastName,
+    username: user.username,
+    email: user.email,
+    image: user.image,
+  });
+
+  const [file, setFile] = useState(null);
+
+  const dispatch = useDispatch();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+    setInputs({ ...inputs, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!file) {
+      toast.promise(updateUser(id, inputs, dispatch), {
+        pending: "Trying to update user",
+        success: "Updated successfully",
+        error: {
+          render: ({ data }) => {
+            return `${data.message}`;
+          },
+        },
+      });
+      return;
+    }
+
+    const fileName = new Date().getTime() + file.name;
+    const storage = getStorage(app);
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+        switch (snapshot.state) {
+          case "paused":
+            console.log("Upload is paused");
+            break;
+          case "running":
+            console.log("Upload is running");
+            break;
+          default:
+        }
+      },
+      (error) => {
+        // Handle unsuccessful uploads
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          const user = {
+            ...inputs,
+            image: downloadURL,
+          };
+          toast.promise(updateUser(id, user, dispatch), {
+            pending: "Trying to update user",
+            success: "Updated successfully",
+            error: {
+              render: ({ data }) => {
+                return `${data.message}`;
+              },
+            },
+          });
+        });
+      }
+    );
+  };
+
   return (
     <DashboardLayout>
       <div className="user">
@@ -24,37 +111,33 @@ const User = () => {
           <div className="userShow">
             <div className="userShowTop">
               <img
-                src="https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-                alt=""
+                src={user.image}
+                alt={user.username}
                 className="userShowImg"
               />
               <div className="userShowTopTitle">
-                <span className="userShowUsername">Anna Becker</span>
-                <span className="userShowUserTitle">Software Engineer</span>
+                <span className="userShowUsername">{user.username}</span>
+                <span className="userShowUserTitle">{user.fullname}</span>
               </div>
             </div>
             <div className="userShowBottom">
               <span className="userShowTitle">Account Details</span>
               <div className="userShowInfo">
                 <PermIdentity className="userShowIcon" />
-                <span className="userShowInfoTitle">annabeck99</span>
+                <span className="userShowInfoTitle">{user.username}</span>
               </div>
               <div className="userShowInfo">
-                <CalendarToday className="userShowIcon" />
-                <span className="userShowInfoTitle">10.12.1999</span>
+                <PermIdentity className="userShowIcon" />
+                <span className="userShowInfoTitle">{user.firstName}</span>
+              </div>
+              <div className="userShowInfo">
+                <PermIdentity className="userShowIcon" />
+                <span className="userShowInfoTitle">{user.lastName}</span>
               </div>
               <span className="userShowTitle">Contact Details</span>
               <div className="userShowInfo">
-                <PhoneAndroid className="userShowIcon" />
-                <span className="userShowInfoTitle">+1 123 456 67</span>
-              </div>
-              <div className="userShowInfo">
                 <MailOutline className="userShowIcon" />
-                <span className="userShowInfoTitle">annabeck99@gmail.com</span>
-              </div>
-              <div className="userShowInfo">
-                <LocationSearching className="userShowIcon" />
-                <span className="userShowInfoTitle">New York | USA</span>
+                <span className="userShowInfoTitle">{user.email}</span>
               </div>
             </div>
           </div>
@@ -65,40 +148,44 @@ const User = () => {
                 <div className="userUpdateItem">
                   <label>Username</label>
                   <input
+                    name="username"
+                    value={inputs.username}
+                    onChange={handleChange}
                     type="text"
                     placeholder="annabeck99"
                     className="userUpdateInput"
                   />
                 </div>
                 <div className="userUpdateItem">
-                  <label>Full Name</label>
+                  <label>First Name</label>
                   <input
+                    name="firstName"
+                    value={inputs.firstName}
+                    onChange={handleChange}
                     type="text"
-                    placeholder="Anna Becker"
+                    placeholder="Anna"
+                    className="userUpdateInput"
+                  />
+                </div>
+                <div className="userUpdateItem">
+                  <label>Last Name</label>
+                  <input
+                    name="lastName"
+                    value={inputs.lastName}
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="Becker"
                     className="userUpdateInput"
                   />
                 </div>
                 <div className="userUpdateItem">
                   <label>Email</label>
                   <input
+                    name="email"
+                    value={inputs.email}
+                    onChange={handleChange}
                     type="text"
                     placeholder="annabeck99@gmail.com"
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Phone</label>
-                  <input
-                    type="text"
-                    placeholder="+1 123 456 67"
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Address</label>
-                  <input
-                    type="text"
-                    placeholder="New York | USA"
                     className="userUpdateInput"
                   />
                 </div>
@@ -107,15 +194,23 @@ const User = () => {
                 <div className="userUpdateUpload">
                   <img
                     className="userUpdateImg"
-                    src="https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-                    alt=""
+                    src={inputs.image}
+                    alt={inputs.username}
                   />
                   <label htmlFor="file">
                     <Publish className="userUpdateIcon" />
                   </label>
-                  <input type="file" id="file" style={{ display: "none" }} />
+
+                  <input
+                    type="file"
+                    id="file"
+                    style={{ display: "none" }}
+                    onChange={(e) => setFile(e.target.files[0])}
+                  />
                 </div>
-                <button className="userUpdateButton">Update</button>
+                <button onClick={handleSubmit} className="userUpdateButton">
+                  Update
+                </button>
               </div>
             </form>
           </div>
