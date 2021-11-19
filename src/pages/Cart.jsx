@@ -1,5 +1,5 @@
-import { Add, Remove } from "@material-ui/icons";
-import { useSelector } from "react-redux";
+import { Add, Close, Remove } from "@material-ui/icons";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Layout from "../layout/Layout";
 import { tablet } from "../responsive";
@@ -7,6 +7,15 @@ import StripeCheckout from "react-stripe-checkout";
 import { useEffect, useState } from "react";
 import storeApi from "../api/store-api";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+} from "@material-ui/core";
+
+import { addProductToCart, removeProductFromCart } from "../redux/cartReducer";
 
 const KEY = process.env.REACT_APP_STRIPE;
 
@@ -31,20 +40,10 @@ const TopButton = styled.button`
   padding: 10px;
   font-weight: 600;
   cursor: pointer;
-  border: ${(props) => props.type === "filled" && "none"};
+  border: ${(props) => props.type === "1px solid black" && "none"};
   background-color: ${(props) =>
     props.type === "filled" ? "black" : "transparent"};
   color: ${(props) => props.type === "filled" && "white"};
-`;
-
-const TopTexts = styled.div`
-  ${tablet({ display: "none" })}
-`;
-
-const TopText = styled.span`
-  text-decoration: underline;
-  cursor: pointer;
-  margin: 0px 10px;
 `;
 
 const Bottom = styled.div`
@@ -154,12 +153,16 @@ const Button = styled.button`
   background-color: black;
   color: white;
   font-weight: 600;
+  border: none;
 `;
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
+  const [coupon, setCoupon] = useState("");
+  const [isValid, setIsValid] = useState(false);
   const [stripeToken, setStripeToken] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onToken = (token) => {
     setStripeToken(token);
@@ -191,11 +194,6 @@ const Cart = () => {
           <Link to="/products">
             <TopButton>CONTINUE SHOPPING</TopButton>
           </Link>
-          <TopTexts>
-            <TopText>Shopping Bag(2)</TopText>
-            <TopText>Your Wishlist (0)</TopText>
-          </TopTexts>
-          <TopButton type="filled">CHECKOUT NOW</TopButton>
         </Top>
         <Bottom>
           <Info>
@@ -219,9 +217,17 @@ const Cart = () => {
                   </ProductDetail>
                   <PriceDetail>
                     <ProductAmountContainer>
-                      <Add />
+                      <Add
+                        onClick={() =>
+                          dispatch(
+                            addProductToCart({ ...product, quantity: 1 })
+                          )
+                        }
+                      />
                       <ProductAmount>{product.quantity}</ProductAmount>
-                      <Remove />
+                      <Remove
+                        onClick={() => dispatch(removeProductFromCart(product))}
+                      />
                     </ProductAmountContainer>
                     <ProductPrice>$ {product.price}</ProductPrice>
                   </PriceDetail>
@@ -237,30 +243,59 @@ const Cart = () => {
               <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
-              <SummaryItemText>Estimated Shipping</SummaryItemText>
-              <SummaryItemPrice>$ 5.90</SummaryItemPrice>
-            </SummaryItem>
-            <SummaryItem>
               <SummaryItemText>Shipping Discount</SummaryItemText>
-              <SummaryItemPrice>$ -5.90</SummaryItemPrice>
+              <SummaryItemPrice>$ -0.00</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
 
-            <StripeCheckout
-              name="Ecommerce Shop"
-              image="https://avatars.githubusercontent.com/u/1486366?v=4"
-              billingAddress
-              shippingAddress
-              description={`Your total is $${cart.total}`}
-              amount={cart.total * 100}
-              token={onToken}
-              stripeKey={KEY}
+            {cart.total > 0 && (
+              <StripeCheckout
+                name="Ecommerce Shop"
+                image="https://avatars.githubusercontent.com/u/1486366?v=4"
+                billingAddress
+                shippingAddress
+                description={`Your total is $${cart.total}`}
+                amount={cart.total * 100}
+                token={onToken}
+                stripeKey={KEY}
+              >
+                <Button>CHECKOUT NOW</Button>
+              </StripeCheckout>
+            )}
+
+            <FormControl
+              fullWidth
+              variant="outlined"
+              style={{ margin: "20px 0 10px" }}
             >
-              <Button>CHECKOUT NOW</Button>
-            </StripeCheckout>
+              <InputLabel htmlFor="apply-coupon">Apply Coupon</InputLabel>
+              <OutlinedInput
+                id="apply-coupon"
+                value={coupon}
+                onChange={(e) => setCoupon(e.target.value)}
+                type="text"
+                required
+                endAdornment={
+                  isValid ? (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => {
+                          setIsValid(false);
+                          setCoupon("");
+                        }}
+                      >
+                        <Close />
+                      </IconButton>
+                    </InputAdornment>
+                  ) : null
+                }
+              />
+            </FormControl>
+
+            {!isValid && <Button>Apply Coupon</Button>}
           </Summary>
         </Bottom>
       </Wrapper>

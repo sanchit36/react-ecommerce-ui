@@ -16,7 +16,6 @@ const Products = ({ cat, filters, page }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("HEELLOOOOO");
     let params = "";
     if (filters) {
       const { size, color, sort } = filters;
@@ -25,7 +24,6 @@ const Products = ({ cat, filters, page }) => {
       params = color && color !== "color" ? params + `&color=${color}` : params;
       params = sort ? params + `&sortBy=${sort}` : params;
     }
-    console.log(params);
     getProducts(page, dispatch, params);
   }, [filters, cat, page, dispatch]);
 

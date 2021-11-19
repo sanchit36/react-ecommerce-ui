@@ -10,33 +10,42 @@ const cartSlice = createSlice({
   reducers: {
     getCart(state, { payload }) {
       state.products = payload.products;
-      state.quantity = payload.quantity;
-      state.total = payload.products.length;
+      state.total = payload.total;
+      state.quantity = payload.products.length;
     },
     resetCart(state) {
       state.products = [];
       state.quantity = 0;
       state.total = 0;
     },
-    addProduct: (state, { payload }) => {
-      const isPresent = state.products.findIndex(
-        (product) => product.id === payload.id
+    addProductToCart: (state, { payload }) => {
+      const existingCartItem = state.products.find(
+        (cartItem) => cartItem.id === payload.id
       );
 
-      if (isPresent === -1) {
-        state.products.push(payload);
+      if (existingCartItem) {
+        existingCartItem.quantity += payload.quantity;
       } else {
-        state.products[isPresent].quantity += payload.quantity;
+        state.products.push(payload);
+        state.quantity += 1;
       }
-
-      state.quantity += isPresent === -1 ? 1 : 0;
-      state.total += payload.price * payload.quantity;
+      state.total += payload.quantity * payload.price;
     },
-    removeProduct: (state, { payload }) => {
-      const isPresent = payload.index;
 
-      state.products[isPresent].quantity -= 1;
-      state.total -= payload.price;
+    removeProductFromCart: (state, { payload }) => {
+      const existingCartItem = state.products.findIndex(
+        (cartItem) => cartItem.id === payload.id
+      );
+
+      if (existingCartItem !== -1) {
+        if (state.products[existingCartItem].quantity > 1) {
+          state.products[existingCartItem].quantity -= 1;
+        } else {
+          state.products.splice(existingCartItem, 1);
+          state.quantity -= 1;
+        }
+        state.total -= payload.price;
+      }
     },
     deleteProduct: (state, { payload }) => {
       const isPresent = payload.index;
@@ -47,7 +56,12 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addProduct, removeProduct, deleteProduct, getCart, resetCart } =
-  cartSlice.actions;
+export const {
+  addProductToCart,
+  removeProductFromCart,
+  deleteProduct,
+  getCart,
+  resetCart,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

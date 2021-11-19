@@ -7,7 +7,7 @@ import { mobile, tablet } from "../responsive";
 import { useParams } from "react-router";
 import storeApi from "../api/store-api";
 import { useDispatch } from "react-redux";
-import { addProduct } from "../redux/cartReducer";
+import { addProductToCart } from "../redux/cartReducer";
 
 const ProductWrapper = styled.div`
   padding: 50px 0px;
@@ -149,7 +149,9 @@ const Product = () => {
   };
 
   const handleClick = () => {
-    dispatch(addProduct({ ...product, quantity, color: colorState, size }));
+    dispatch(
+      addProductToCart({ ...product, quantity, color: colorState, size })
+    );
   };
 
   if (!product) return null;

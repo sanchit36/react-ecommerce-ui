@@ -86,7 +86,6 @@ export const getUser = async (dispatch, token) => {
     dispatch(getUserSuccess({ user, token }));
     return { user };
   } catch (err) {
-    console.log(err);
     let error = err;
     if (!error.response) {
       throw err;
@@ -103,7 +102,6 @@ export const getUsers = async (page = 1, dispatch) => {
     dispatch(getUsersSuccess(response.data));
     return;
   } catch (err) {
-    console.log(err);
     let error = err;
     if (!error.response) {
       throw err;
@@ -157,7 +155,6 @@ export const addUser = async (user, dispatch, cb) => {
 export const getProducts = async (page = 1, dispatch, params) => {
   dispatch(getProductStart());
   try {
-    console.log(params);
     const res = params
       ? await storeApi.get(`/products?page=${page}+${params}`)
       : await storeApi.get(`/products?page=${page}`);
