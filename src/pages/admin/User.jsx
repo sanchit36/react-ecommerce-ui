@@ -103,7 +103,7 @@ const User = () => {
       <div className="user">
         <div className="userTitleContainer">
           <h1 className="userTitle">Edit User</h1>
-          <Link to="/dashboard/newuser">
+          <Link to="/dashboard/new-user">
             <button className="userAddButton">Create</button>
           </Link>
         </div>

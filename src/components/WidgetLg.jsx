@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import storeApi from "../api/store-api";
+
 import { format } from "timeago.js";
+import useAxios from "../hooks/useAxios";
 import {
   Container,
   Table,
@@ -15,11 +16,12 @@ const Button = ({ type }) => {
 
 export default function WidgetLg() {
   const [orders, setOrders] = useState([]);
+  const [api] = useAxios();
 
   useEffect(() => {
     const getOrders = async () => {
       try {
-        const res = await storeApi.get("orders");
+        const res = await api.get("orders");
         setOrders(res.data);
       } catch {}
     };

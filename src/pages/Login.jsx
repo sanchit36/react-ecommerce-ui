@@ -5,6 +5,7 @@ import { authUser } from "../api/apiCall";
 import Navbar from "../components/Navbar";
 import useForm from "../hooks/useForm";
 import { Button } from "../styles/common";
+import useAxios from "../hooks/useAxios";
 
 import {
   Container,
@@ -24,10 +25,11 @@ const Login = () => {
   const { isFetching } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [api] = useAxios();
 
   const onSubmit = (values) => {
     toast.promise(
-      authUser(dispatch, "/auth/signin", values, () => navigate("/")),
+      authUser(api, dispatch, "/auth/signin", values, () => navigate("/")),
       {
         pending: "Trying to login...",
         success: {

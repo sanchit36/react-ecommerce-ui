@@ -1,6 +1,7 @@
 import { Button, Icon } from "@material-ui/core";
 import { useEffect, useState } from "react";
-import storeApi from "../api/store-api";
+import useAxios from "../hooks/useAxios";
+
 import {
   Container,
   Fullname,
@@ -14,11 +15,12 @@ import {
 
 const WidgetSm = () => {
   const [users, setUsers] = useState([]);
+  const [api] = useAxios();
 
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const res = await storeApi.get("users/?new=true");
+        const res = await api.get("users/?new=true");
         setUsers(res.data.users);
       } catch {}
     };

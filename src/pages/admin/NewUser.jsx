@@ -3,6 +3,7 @@ import { addUser } from "../../api/apiCall";
 import DashboardLayout from "../../layout/DashboardLayout";
 import "./newUser.css";
 import { useDispatch } from "react-redux";
+import useAxios from "../../hooks/useAxios";
 
 const NewUser = () => {
   const [user, setUser] = useState({
@@ -15,6 +16,7 @@ const NewUser = () => {
   });
 
   const dispatch = useDispatch();
+  const [api] = useAxios();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,7 +25,7 @@ const NewUser = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    addUser(user, dispatch, () => {
+    addUser(api, user, dispatch, () => {
       setUser({
         firstName: "",
         lastName: "",

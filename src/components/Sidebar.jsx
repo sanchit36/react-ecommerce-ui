@@ -1,4 +1,5 @@
 import {
+  AttachMoney,
   LineStyle,
   // Timeline,
   // TrendingUp,
@@ -68,14 +69,6 @@ export default function Sidebar() {
                 Home
               </SidebarListItem>
             </Link>
-            {/* <SidebarListItem>
-              <Timeline style={{marginRight: '5px', fontSize: '20px'}} />
-              Analytics
-            </SidebarListItem>
-            <SidebarListItem>
-              <TrendingUp style={{marginRight: '5px', fontSize: '20px'}} />
-              Sales
-            </SidebarListItem> */}
           </SidebarList>
         </Menu>
         <Menu>
@@ -89,7 +82,7 @@ export default function Sidebar() {
                 Users
               </SidebarListItem>
             </Link>
-            <Link to="/dashboard/newuser">
+            <Link to="/dashboard/new-user">
               <SidebarListItem>
                 <PermIdentity
                   style={{ marginRight: "5px", fontSize: "20px" }}
@@ -103,20 +96,18 @@ export default function Sidebar() {
                 Products
               </SidebarListItem>
             </Link>
-            <Link to="/dashboard/newproduct">
+            <Link to="/dashboard/new-product">
               <SidebarListItem>
                 <Storefront style={{ marginRight: "5px", fontSize: "20px" }} />
                 Add Products
               </SidebarListItem>
             </Link>
-            {/* <SidebarListItem>
-              <AttachMoney style={{marginRight: '5px', fontSize: '20px'}} />
-              Transactions
-            </SidebarListItem>
-            <SidebarListItem>
-              <BarChart style={{marginRight: '5px', fontSize: '20px'}} />
-              Reports
-            </SidebarListItem> */}
+            <Link to="/dashboard/orders">
+              <SidebarListItem>
+                <AttachMoney style={{ marginRight: "5px", fontSize: "20px" }} />
+                Orders
+              </SidebarListItem>
+            </Link>
           </SidebarList>
         </Menu>
         {/* <Menu>

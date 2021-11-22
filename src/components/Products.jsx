@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { getProducts } from "../api/apiCall";
+import useAxios from "../hooks/useAxios";
 import ProductItem from "./ProductItem";
 
 const Container = styled.div`
@@ -14,6 +15,7 @@ const Container = styled.div`
 const Products = ({ cat, filters, page }) => {
   const products = useSelector((state) => state.product.products);
   const dispatch = useDispatch();
+  const [api] = useAxios();
 
   useEffect(() => {
     let params = "";
@@ -24,7 +26,7 @@ const Products = ({ cat, filters, page }) => {
       params = color && color !== "color" ? params + `&color=${color}` : params;
       params = sort ? params + `&sortBy=${sort}` : params;
     }
-    getProducts(page, dispatch, params);
+    getProducts(api, page, dispatch, params);
   }, [filters, cat, page, dispatch]);
 
   return (

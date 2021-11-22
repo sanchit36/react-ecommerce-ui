@@ -1,7 +1,4 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route } from "react-router-dom";
-import { getUser } from "./api/apiCall";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -24,19 +21,37 @@ import Register from "./pages/Register";
 import Success from "./pages/Success";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
+import OrderList from "./pages/admin/OrderList";
+import { useEffect, useState } from "react";
+import { setUser } from "./redux/authReducer";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+axios.defaults.withCredentials = true;
 
 const App = () => {
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.user.currentUser);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token != null && !currentUser) {
-      getUser(dispatch, token);
-    }
-  }, [dispatch, currentUser]);
+    const getToken = async () => {
+      setLoading(true);
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/auth/refresh_token`
+      );
+      setLoading(false);
+      dispatch(
+        setUser({
+          token: response.data.accessToken,
+          user: response.data.user,
+        })
+      );
+    };
+    getToken();
+  }, []);
 
-  return (
+  return loading ? (
+    <h1>Loading...</h1>
+  ) : (
     <>
       <ToastContainer
         position="top-right"
@@ -61,7 +76,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="/product/:id" element={<Product />} />
+        <Route path="/product/:slug" element={<Product />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/:category" element={<ProductList />} />
         <Route
@@ -91,7 +106,7 @@ const App = () => {
             }
           />
           <Route
-            path="newproduct"
+            path="new-product"
             element={
               <AdminRoute>
                 <DashboardNewProduct />
@@ -115,7 +130,7 @@ const App = () => {
             }
           />
           <Route
-            path="newuser"
+            path="new-user"
             element={
               <AdminRoute>
                 <DashboardNewUser />
@@ -127,6 +142,14 @@ const App = () => {
             element={
               <AdminRoute>
                 <DashboardUser />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="orders"
+            element={
+              <AdminRoute>
+                <OrderList />
               </AdminRoute>
             }
           />

@@ -15,15 +15,6 @@ import {
 } from "../redux/productReducer";
 
 import {
-  loginFailure,
-  loginStart,
-  loginSuccess,
-  logoutFailure,
-  logoutStart,
-  logoutSuccess,
-  getUserFailure,
-  getUserStart,
-  getUserSuccess,
   getUsersFailure,
   getUsersStart,
   getUsersSuccess,
@@ -38,15 +29,28 @@ import {
   addUserFailure,
 } from "../redux/userReducer";
 
-import storeApi from "./store-api";
+import {
+  loginFailure,
+  loginStart,
+  loginSuccess,
+  logoutFailure,
+  logoutStart,
+  logoutSuccess,
+} from "../redux/authReducer";
 
 // Auth User
-export const authUser = async (dispatch, routeName, userCredentials, cb) => {
+export const authUser = async (
+  api,
+  dispatch,
+  routeName,
+  userCredentials,
+  cb
+) => {
   dispatch(loginStart());
   try {
-    const response = await storeApi.post(routeName, userCredentials);
+    const response = await api.post(routeName, userCredentials);
     const { user, token, cart } = response.data;
-    localStorage.setItem("token", token);
+
     dispatch(loginSuccess({ user, token }));
     dispatch(getCart(cart));
     if (cb) cb();
@@ -62,11 +66,10 @@ export const authUser = async (dispatch, routeName, userCredentials, cb) => {
 };
 
 // Logout User
-export const logoutUser = async (dispatch) => {
+export const logoutUser = async (api, dispatch) => {
   dispatch(logoutStart());
   try {
-    await storeApi.post("/auth/signout");
-    localStorage.removeItem("token");
+    await api.post("/auth/signout");
     dispatch(logoutSuccess({ user: null, token: null }));
   } catch (err) {
     let error = err;
@@ -77,28 +80,11 @@ export const logoutUser = async (dispatch) => {
   }
 };
 
-// Get User
-export const getUser = async (dispatch, token) => {
-  dispatch(getUserStart());
-  try {
-    const response = await storeApi.get("/users/me");
-    const user = response.data;
-    dispatch(getUserSuccess({ user, token }));
-    return { user };
-  } catch (err) {
-    let error = err;
-    if (!error.response) {
-      throw err;
-    }
-    dispatch(getUserFailure(error.response.data));
-  }
-};
-
 // Get All user
-export const getUsers = async (page = 1, dispatch) => {
+export const getUsers = async (api, page = 1, dispatch) => {
   dispatch(getUsersStart());
   try {
-    const response = await storeApi.get("/users");
+    const response = await api.get("/users");
     dispatch(getUsersSuccess(response.data));
     return;
   } catch (err) {
@@ -111,10 +97,10 @@ export const getUsers = async (page = 1, dispatch) => {
 };
 
 // Delete User
-export const deleteUser = async (id, dispatch) => {
+export const deleteUser = async (api, id, dispatch) => {
   dispatch(deleteUserStart());
   try {
-    await storeApi.delete(`/users/${id}`);
+    await api.delete(`/users/${id}`);
     dispatch(deleteUserSuccess(id));
   } catch (err) {
     dispatch(deleteUserFailure());
@@ -122,11 +108,11 @@ export const deleteUser = async (id, dispatch) => {
 };
 
 // Update User
-export const updateUser = async (id, user, dispatch) => {
+export const updateUser = async (api, id, user, dispatch) => {
   dispatch(updateUserStart());
   try {
     // update
-    const response = await storeApi.put("/users/" + id, user);
+    const response = await api.put("/users/" + id, user);
     dispatch(updateUserSuccess({ id, user: response.data }));
     return response.data;
   } catch (err) {
@@ -140,10 +126,10 @@ export const updateUser = async (id, user, dispatch) => {
 };
 
 // Add User
-export const addUser = async (user, dispatch, cb) => {
+export const addUser = async (api, user, dispatch, cb) => {
   dispatch(addUserStart());
   try {
-    const res = await storeApi.post(`/users`, user);
+    const res = await api.post(`/users`, user);
     dispatch(addUserSuccess(res.data));
     if (cb) cb();
   } catch (err) {
@@ -152,12 +138,12 @@ export const addUser = async (user, dispatch, cb) => {
 };
 
 // GET product
-export const getProducts = async (page = 1, dispatch, params) => {
+export const getProducts = async (api, page = 1, dispatch, params) => {
   dispatch(getProductStart());
   try {
     const res = params
-      ? await storeApi.get(`/products?page=${page}+${params}`)
-      : await storeApi.get(`/products?page=${page}`);
+      ? await api.get(`/products?page=${page}+${params}`)
+      : await api.get(`/products?page=${page}`);
     dispatch(getProductSuccess(res.data));
   } catch (err) {
     dispatch(getProductFailure());
@@ -165,10 +151,10 @@ export const getProducts = async (page = 1, dispatch, params) => {
 };
 
 // Delete Product
-export const deleteProduct = async (id, dispatch) => {
+export const deleteProduct = async (api, id, dispatch) => {
   dispatch(deleteProductStart());
   try {
-    await storeApi.delete(`/products/${id}`);
+    await api.delete(`/products/${id}`);
     dispatch(deleteProductSuccess(id));
   } catch (err) {
     dispatch(deleteProductFailure());
@@ -176,11 +162,11 @@ export const deleteProduct = async (id, dispatch) => {
 };
 
 // Update Product
-export const updateProduct = async (id, product, dispatch) => {
+export const updateProduct = async (api, id, product, dispatch) => {
   dispatch(updateProductStart());
   try {
     // update
-    const response = await storeApi.put("/products/" + id, product);
+    const response = await api.put("/products/" + id, product);
     dispatch(updateProductSuccess({ id, product: response.data }));
     return response.data;
   } catch (err) {
@@ -189,10 +175,10 @@ export const updateProduct = async (id, product, dispatch) => {
 };
 
 // Add Product
-export const addProduct = async (product, dispatch, cb) => {
+export const addProduct = async (api, product, dispatch, cb) => {
   dispatch(addProductStart());
   try {
-    const res = await storeApi.post(`/products`, product);
+    const res = await api.post(`/products`, product);
     dispatch(addProductSuccess(res.data));
     if (cb) cb();
   } catch (err) {

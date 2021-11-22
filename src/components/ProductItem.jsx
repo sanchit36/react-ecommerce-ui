@@ -71,7 +71,7 @@ const Icon = styled.div`
 const ProductItem = ({ item }) => {
   const navigate = useNavigate();
   return (
-    <Container onClick={() => navigate(`/product/${item.id}`)}>
+    <Container onClick={() => navigate(`/product/${item.slug}`)}>
       <Circle />
       <Image src={item.image} />
       <Info>

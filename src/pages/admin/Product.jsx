@@ -5,9 +5,9 @@ import styled from "styled-components";
 import ProductForm from "../../components/ProductForm";
 import { updateProduct } from "../../api/apiCall";
 import { useEffect, useMemo, useState } from "react";
-import storeApi from "../../api/store-api";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import useAxios from "../../hooks/useAxios";
 
 const Container = styled.div`
   flex: 4;
@@ -74,7 +74,7 @@ const Product = () => {
   const product = useSelector((state) =>
     state.product.products.find((product) => product.id === id)
   );
-
+  const [api] = useAxios();
   const [pStats, setPStats] = useState([]);
   const MONTHS = useMemo(
     () => [
@@ -97,7 +97,7 @@ const Product = () => {
   useEffect(() => {
     const getStats = async () => {
       try {
-        const res = await storeApi.get("orders/income?pid=" + product.id);
+        const res = await api.get("orders/income?pid=" + product.id);
         const list = res.data.sort((a, b) => {
           return a.id - b.id;
         });
@@ -125,7 +125,7 @@ const Product = () => {
       <Container>
         <TitleContainer>
           <h1>Product</h1>
-          <Link to="/dashboard/newproduct">
+          <Link to="/dashboard/new-product">
             <Button>Create</Button>
           </Link>
         </TitleContainer>

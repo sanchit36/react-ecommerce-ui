@@ -5,9 +5,10 @@ import Layout from "../layout/Layout";
 import { Wrapper } from "../styles/common";
 import { mobile, tablet } from "../responsive";
 import { useParams } from "react-router";
-import storeApi from "../api/store-api";
+
 import { useDispatch } from "react-redux";
 import { addProductToCart } from "../redux/cartReducer";
+import useAxios from "../hooks/useAxios";
 
 const ProductWrapper = styled.div`
   padding: 50px 0px;
@@ -121,24 +122,25 @@ const Button = styled.button`
 `;
 
 const Product = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [product, setProduct] = useState();
   const [quantity, setQuantity] = useState(1);
   const [colorState, setColorState] = useState("");
   const [size, setSize] = useState("");
   const dispatch = useDispatch();
+  const [api] = useAxios();
 
   useEffect(() => {
     const getProduct = async () => {
       try {
-        const response = await storeApi.get("/products/" + id);
+        const response = await api.get("/products/" + slug);
         setProduct(response.data);
         setSize(response.data.sizes[0].name);
         setColorState(response.data.colors[0].name);
       } catch (e) {}
     };
     getProduct();
-  }, [id]);
+  }, [slug]);
 
   const handleQuantity = (type) => {
     if (type === "dec") {

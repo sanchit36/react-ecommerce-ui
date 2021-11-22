@@ -4,13 +4,6 @@ const start = (state) => {
   state.isFetching = true;
 };
 
-const success = (state, { payload: { user, token } }) => {
-  state.isFetching = false;
-  state.errorMessage = null;
-  state.currentUser = user;
-  state.token = token;
-};
-
 const failure = (state, { payload: errorMessage }) => {
   state.isFetching = false;
   state.errorMessage = errorMessage.message;
@@ -23,24 +16,10 @@ const userSlice = createSlice({
     hasPrev: false,
     hasNext: false,
     users: [],
-    currentUser: null,
-    token: null,
     isFetching: false,
     errorMessage: null,
   },
   reducers: {
-    // Login
-    loginStart: start,
-    loginSuccess: success,
-    loginFailure: failure,
-    // Logout
-    logoutStart: start,
-    logoutSuccess: success,
-    logoutFailure: success,
-    // Get User
-    getUserStart: start,
-    getUserSuccess: success,
-    getUserFailure: failure,
     // Get all users
     getUsersStart: start,
     getUsersSuccess: (
@@ -85,15 +64,6 @@ const userSlice = createSlice({
 });
 
 export const {
-  loginStart,
-  loginSuccess,
-  loginFailure,
-  logoutStart,
-  logoutSuccess,
-  logoutFailure,
-  getUserStart,
-  getUserSuccess,
-  getUserFailure,
   getUsersStart,
   getUsersSuccess,
   getUsersFailure,

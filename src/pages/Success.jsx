@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router";
-import storeApi from "../api/store-api";
+import useAxios from "../hooks/useAxios";
 
 const Success = () => {
   const location = useLocation();
@@ -10,11 +10,12 @@ const Success = () => {
   const cart = location.state.cart;
   const currentUser = useSelector((state) => state.user.currentUser);
   const [orderId, setOrderId] = useState(null);
+  const [api] = useAxios();
 
   useEffect(() => {
     const createOrder = async () => {
       try {
-        const res = await storeApi.post("/orders", {
+        const res = await api.post("/orders", {
           user: currentUser.id,
           products: cart.products.map((item) => ({
             product: item.id,

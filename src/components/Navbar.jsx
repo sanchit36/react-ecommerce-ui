@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { logoutUser } from "../api/apiCall";
+import useAxios from "../hooks/useAxios";
 import { mobile, tablet } from "../responsive";
 import { Wrapper } from "../styles/common";
 
@@ -79,10 +80,11 @@ const MenuItem = styled.div`
 `;
 
 const Navbar = () => {
-  const currentUser = useSelector((state) => state.user.currentUser);
+  const currentUser = useSelector((state) => state.auth.currentUser);
   const quantity = useSelector((state) => state.cart.quantity);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [api] = useAxios();
 
   return (
     <Container>
@@ -114,7 +116,7 @@ const Navbar = () => {
                     DASHBOARD
                   </MenuItem>
                 )}
-                <MenuItem onClick={() => logoutUser(dispatch)}>
+                <MenuItem onClick={() => logoutUser(api, dispatch)}>
                   LOG OUT
                 </MenuItem>
                 <MenuItem onClick={() => navigate("/cart")}>

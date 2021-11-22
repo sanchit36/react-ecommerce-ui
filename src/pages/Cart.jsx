@@ -5,7 +5,7 @@ import Layout from "../layout/Layout";
 import { tablet } from "../responsive";
 import StripeCheckout from "react-stripe-checkout";
 import { useEffect, useState } from "react";
-import storeApi from "../api/store-api";
+
 import { Link, useNavigate } from "react-router-dom";
 import {
   FormControl,
@@ -16,6 +16,7 @@ import {
 } from "@material-ui/core";
 
 import { addProductToCart, removeProductFromCart } from "../redux/cartReducer";
+import useAxios from "../hooks/useAxios";
 
 const KEY = process.env.REACT_APP_STRIPE;
 
@@ -163,6 +164,7 @@ const Cart = () => {
   const [stripeToken, setStripeToken] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [api] = useAxios();
 
   const onToken = (token) => {
     setStripeToken(token);
@@ -171,7 +173,7 @@ const Cart = () => {
   useEffect(() => {
     const makeRequest = async () => {
       try {
-        const res = await storeApi.post("/checkout/payment", {
+        const res = await api.post("/checkout/payment", {
           tokenId: stripeToken.id,
           amount: cart.total * 100,
         });

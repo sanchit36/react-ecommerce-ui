@@ -82,11 +82,11 @@ const Button = styled.button`
 
 const Slider = () => {
   const [slideIndex, setSlideIndex] = useState(0);
-  const timmer = useRef();
+  const timer = useRef();
 
   const handleClick = useCallback(
     (direction) => {
-      clearTimeout(timmer.current);
+      clearTimeout(timer.current);
       if (direction === "left") {
         setSlideIndex(slideIndex > 0 ? slideIndex - 1 : sliderItems.length - 1);
       } else {
@@ -97,12 +97,12 @@ const Slider = () => {
   );
 
   useEffect(() => {
-    timmer.current = setTimeout(() => {
+    timer.current = setTimeout(() => {
       handleClick("right");
     }, 3000);
 
     return () => {
-      clearTimeout(timmer.current);
+      clearTimeout(timer.current);
     };
   }, [handleClick]);
 

@@ -16,6 +16,7 @@ import {
   Agreement,
   LinkStyle,
 } from "../styles/AuthForm";
+import useAxios from "../hooks/useAxios";
 
 const initialState = {
   firstName: "",
@@ -28,7 +29,7 @@ const initialState = {
 
 const Register = () => {
   const { isFetching } = useSelector((state) => state.user);
-
+  const [api] = useAxios();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -38,7 +39,7 @@ const Register = () => {
     }
 
     toast.promise(
-      authUser(dispatch, "/auth/signup", values, () => navigate("/")),
+      authUser(api, dispatch, "/auth/signup", values, () => navigate("/")),
       {
         pending: "Trying to register...",
         success: {
