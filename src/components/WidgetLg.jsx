@@ -22,34 +22,39 @@ export default function WidgetLg() {
     const getOrders = async () => {
       try {
         const res = await api.get("orders");
-        setOrders(res.data);
+        setOrders(res.data.orders);
       } catch {}
     };
     getOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <Container>
       <Title>Latest transactions</Title>
       <Table>
-        <tr style={{ textAlign: "left" }}>
-          <th className="widgetLgTh">Customer</th>
-          <th className="widgetLgTh">Date</th>
-          <th className="widgetLgTh">Amount</th>
-          <th className="widgetLgTh">Status</th>
-        </tr>
-        {orders.map((order) => (
-          <tr key={order._id} style={{ textAlign: "left" }}>
-            <td>
-              <Username>{order.user}</Username>
-            </td>
-            <td>{format(order.createdAt)}</td>
-            <td>$ {order.amount}</td>
-            <td>
-              <Button type={order.status} />
-            </td>
+        <thead>
+          <tr style={{ textAlign: "left" }}>
+            <th className="widgetLgTh">Customer</th>
+            <th className="widgetLgTh">Date</th>
+            <th className="widgetLgTh">Amount</th>
+            <th className="widgetLgTh">Status</th>
           </tr>
-        ))}
+        </thead>
+        <tbody>
+          {orders.map((order) => (
+            <tr key={order._id} style={{ textAlign: "left" }}>
+              <td>
+                <Username>{order.user}</Username>
+              </td>
+              <td>{format(order.createdAt)}</td>
+              <td>$ {order.amount}</td>
+              <td>
+                <Button type={order.status} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </Table>
     </Container>
   );

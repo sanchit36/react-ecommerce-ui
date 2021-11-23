@@ -22,7 +22,7 @@ const initialState = {
 };
 
 const Login = () => {
-  const { isFetching } = useSelector((state) => state.user);
+  const { isFetching } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [api] = useAxios();

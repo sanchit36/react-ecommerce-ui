@@ -112,6 +112,7 @@ const Product = () => {
       }
     };
     getStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.id, MONTHS]);
 
   if (!product) return <h4>Something is wrong</h4>;

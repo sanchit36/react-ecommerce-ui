@@ -84,7 +84,7 @@ export const logoutUser = async (api, dispatch) => {
 export const getUsers = async (api, page = 1, dispatch) => {
   dispatch(getUsersStart());
   try {
-    const response = await api.get("/users");
+    const response = await api.get(`/users?page${page}`);
     dispatch(getUsersSuccess(response.data));
     return;
   } catch (err) {

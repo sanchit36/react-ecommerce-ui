@@ -27,6 +27,7 @@ const Products = ({ cat, filters, page }) => {
       params = sort ? params + `&sortBy=${sort}` : params;
     }
     getProducts(api, page, dispatch, params);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, cat, page, dispatch]);
 
   return (

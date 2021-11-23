@@ -8,7 +8,7 @@ const Success = () => {
   //in Cart.jsx I sent data and cart. Please check that page for the changes.(in video it's only data)
   const data = location.state.data;
   const cart = location.state.cart;
-  const currentUser = useSelector((state) => state.user.currentUser);
+  const currentUser = useSelector((state) => state.auth.currentUser);
   const [orderId, setOrderId] = useState(null);
   const [api] = useAxios();
 
@@ -30,7 +30,7 @@ const Success = () => {
       }
     };
     data && createOrder();
-  }, [cart, data, currentUser]);
+  }, []);
 
   return (
     <div

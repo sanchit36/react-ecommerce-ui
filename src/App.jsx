@@ -1,6 +1,10 @@
+import { useEffect, useState } from "react";
+import { setUser } from "./redux/authReducer";
+import { useDispatch } from "react-redux";
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 // Admin pages
 import Dashboard from "./pages/admin/Dashboard";
@@ -10,6 +14,8 @@ import DashboardNewProduct from "./pages/admin/NewProduct";
 import DashboardUser from "./pages/admin/User";
 import DashboardUserList from "./pages/admin/UserList";
 import DashboardNewUser from "./pages/admin/NewUser";
+import OrderList from "./pages/admin/OrderList";
+import Order from "./pages/admin/Order";
 
 // Client pages
 import Cart from "./pages/Cart";
@@ -19,13 +25,11 @@ import Product from "./pages/Product";
 import ProductList from "./pages/ProductList";
 import Register from "./pages/Register";
 import Success from "./pages/Success";
+
+// Routes
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
-import OrderList from "./pages/admin/OrderList";
-import { useEffect, useState } from "react";
-import { setUser } from "./redux/authReducer";
-import axios from "axios";
-import { useDispatch } from "react-redux";
+
 axios.defaults.withCredentials = true;
 
 const App = () => {
@@ -47,6 +51,7 @@ const App = () => {
       );
     };
     getToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return loading ? (
@@ -150,6 +155,14 @@ const App = () => {
             element={
               <AdminRoute>
                 <OrderList />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="orders/:id"
+            element={
+              <AdminRoute>
+                <Order />
               </AdminRoute>
             }
           />
