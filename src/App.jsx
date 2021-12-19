@@ -1,34 +1,34 @@
-import { useEffect, useState } from "react";
-import { setUser } from "./redux/authReducer";
-import { useDispatch } from "react-redux";
-import { Routes, Route } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+import { useEffect, useState } from 'react';
+import { setUser } from './redux/authReducer';
+import { useDispatch } from 'react-redux';
+import { Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 // Admin pages
-import Dashboard from "./pages/admin/Dashboard";
-import DashboardProduct from "./pages/admin/Product";
-import DashboardProductList from "./pages/admin/ProductList";
-import DashboardNewProduct from "./pages/admin/NewProduct";
-import DashboardUser from "./pages/admin/User";
-import DashboardUserList from "./pages/admin/UserList";
-import DashboardNewUser from "./pages/admin/NewUser";
-import OrderList from "./pages/admin/OrderList";
-import Order from "./pages/admin/Order";
+import Dashboard from './pages/admin/Dashboard';
+import DashboardProduct from './pages/admin/Product';
+import DashboardProductList from './pages/admin/ProductList';
+import DashboardNewProduct from './pages/admin/NewProduct';
+import DashboardUser from './pages/admin/User';
+import DashboardUserList from './pages/admin/UserList';
+import OrderList from './pages/admin/OrderList';
+import Order from './pages/admin/Order';
 
 // Client pages
-import Cart from "./pages/Cart";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Product from "./pages/Product";
-import ProductList from "./pages/ProductList";
-import Register from "./pages/Register";
-import Success from "./pages/Success";
+import Cart from './pages/Cart';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Product from './pages/Product';
+import ProductList from './pages/ProductList';
+import Register from './pages/Register';
+import Success from './pages/Success';
 
 // Routes
-import ProtectedRoute from "./routes/ProtectedRoute";
-import AdminRoute from "./routes/AdminRoute";
+import ProtectedRoute from './routes/ProtectedRoute';
+import PrivateRoute from './routes/PrivateRoute';
+import AdminRoute from './routes/AdminRoute';
 
 axios.defaults.withCredentials = true;
 
@@ -59,7 +59,7 @@ const App = () => {
   ) : (
     <>
       <ToastContainer
-        position="top-right"
+        position='top-right'
         autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
@@ -70,22 +70,36 @@ const App = () => {
       />
       <Routes>
         {/* Client Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/success" element={<Success />} />
+        <Route path='/' element={<Home />} />
         <Route
-          path="/login"
+          path='/cart'
+          element={
+            <PrivateRoute>
+              <Cart />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/success'
+          element={
+            <PrivateRoute>
+              <Success />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/login'
           element={
             <ProtectedRoute>
               <Login />
             </ProtectedRoute>
           }
         />
-        <Route path="/product/:slug" element={<Product />} />
-        <Route path="/products" element={<ProductList />} />
-        <Route path="/products/:category" element={<ProductList />} />
+        <Route path='/product/:slug' element={<Product />} />
+        <Route path='/products' element={<ProductList />} />
+        <Route path='/products/:category' element={<ProductList />} />
         <Route
-          path="/register"
+          path='/register'
           element={
             <ProtectedRoute>
               <Register />
@@ -93,9 +107,9 @@ const App = () => {
           }
         />
         {/* Admin Routes */}
-        <Route path="/dashboard">
+        <Route path='/dashboard'>
           <Route
-            path=""
+            path=''
             element={
               <AdminRoute>
                 <Dashboard />
@@ -103,7 +117,7 @@ const App = () => {
             }
           />
           <Route
-            path="products"
+            path='products'
             element={
               <AdminRoute>
                 <DashboardProductList />
@@ -111,7 +125,7 @@ const App = () => {
             }
           />
           <Route
-            path="new-product"
+            path='new-product'
             element={
               <AdminRoute>
                 <DashboardNewProduct />
@@ -119,7 +133,7 @@ const App = () => {
             }
           />
           <Route
-            path="products/:id"
+            path='products/:id'
             element={
               <AdminRoute>
                 <DashboardProduct />
@@ -127,23 +141,23 @@ const App = () => {
             }
           />
           <Route
-            path="users"
+            path='users'
             element={
               <AdminRoute>
                 <DashboardUserList />
               </AdminRoute>
             }
           />
-          <Route
+          {/* <Route
             path="new-user"
             element={
               <AdminRoute>
                 <DashboardNewUser />
               </AdminRoute>
             }
-          />
+          /> */}
           <Route
-            path="users/:id"
+            path='users/:id'
             element={
               <AdminRoute>
                 <DashboardUser />
@@ -151,7 +165,7 @@ const App = () => {
             }
           />
           <Route
-            path="orders"
+            path='orders'
             element={
               <AdminRoute>
                 <OrderList />
@@ -159,7 +173,7 @@ const App = () => {
             }
           />
           <Route
-            path="orders/:id"
+            path='orders/:id'
             element={
               <AdminRoute>
                 <Order />

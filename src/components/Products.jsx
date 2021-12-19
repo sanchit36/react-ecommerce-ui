@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { getProducts } from "../api/apiCall";
+import { getProducts } from "../api/products";
 import useAxios from "../hooks/useAxios";
 import ProductItem from "./ProductItem";
 

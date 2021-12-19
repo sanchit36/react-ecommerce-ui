@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../../layout/DashboardLayout";
-import { deleteProduct, getProducts } from "../../api/apiCall";
+import { deleteProduct, getProducts } from "../../api/products";
 import { useDispatch, useSelector } from "react-redux";
 import { DataGrid } from "@mui/x-data-grid";
 

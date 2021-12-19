@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../../layout/DashboardLayout";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteUser, getUsers } from "../../api/apiCall";
+import { deleteUser, getUsers } from "../../api/users";
 import { IconButton } from "@material-ui/core";
 import useAxios from "../../hooks/useAxios";
 import { DataGrid } from "@mui/x-data-grid";

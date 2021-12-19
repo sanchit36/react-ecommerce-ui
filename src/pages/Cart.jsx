@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Layout from "../layout/Layout";
 import { tablet } from "../responsive";
 import StripeCheckout from "react-stripe-checkout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -15,7 +15,11 @@ import {
   OutlinedInput,
 } from "@material-ui/core";
 
-import { addProductToCart, removeProductFromCart } from "../redux/cartReducer";
+import {
+  addProductToCart,
+  removeProductFromCart,
+  resetCart,
+} from "../redux/cartReducer";
 import useAxios from "../hooks/useAxios";
 
 const KEY = process.env.REACT_APP_STRIPE;
@@ -158,35 +162,49 @@ const Button = styled.button`
 `;
 
 const Cart = () => {
+  const currentUser = useSelector((state) => state.auth.currentUser);
   const cart = useSelector((state) => state.cart);
   const [coupon, setCoupon] = useState("");
   const [isValid, setIsValid] = useState(false);
-  const [stripeToken, setStripeToken] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [api] = useAxios();
 
-  const onToken = (token) => {
-    setStripeToken(token);
+  const createOrder = async (address) => {
+    try {
+      const res = await api.post("/orders", {
+        user: currentUser.id,
+        products: cart.products.map((item) => ({
+          product: item.id,
+          quantity: item.quantity,
+        })),
+        amount: cart.total,
+        address: address,
+      });
+      console.log(res.data);
+      return res.data._id;
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
   };
 
-  useEffect(() => {
-    const makeRequest = async () => {
-      try {
-        const res = await api.post("/checkout/payment", {
-          tokenId: stripeToken.id,
-          amount: cart.total * 100,
-        });
-        navigate("/success", {
-          state: {
-            data: res.data,
-            cart,
-          },
-        });
-      } catch {}
-    };
-    stripeToken && makeRequest();
-  }, [stripeToken, cart, navigate]);
+  const onToken = async (token) => {
+    try {
+      const stripRes = await api.post("/checkout/payment", {
+        tokenId: token.id,
+        amount: cart.total * 100,
+      });
+      const orderId = await createOrder(stripRes.data.billing_details.address);
+      if (orderId) {
+        navigate("/success", { state: { orderId } });
+        dispatch(resetCart());
+      }
+    } catch (e) {
+      console.log(e.message);
+      navigate("/error", { state: { errorMessage: "Something went wrong" } });
+    }
+  };
 
   return (
     <Layout noNewsletter>

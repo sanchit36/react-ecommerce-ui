@@ -1,6 +1,6 @@
 import ProductForm from "../../components/ProductForm";
 import DashboardLayout from "../../layout/DashboardLayout";
-import { addProduct } from "../../api/apiCall";
+import { addProduct } from "../../api/products";
 import { toast } from "react-toastify";
 import useAxios from "../../hooks/useAxios";
 

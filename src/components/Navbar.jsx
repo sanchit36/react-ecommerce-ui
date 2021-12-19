@@ -1,10 +1,12 @@
+import React, { useState } from "react";
 import { Badge } from "@material-ui/core";
 import { Search, ShoppingCartOutlined } from "@material-ui/icons";
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { logoutUser } from "../api/apiCall";
+
+import { getProducts } from "../api/products";
+import { logoutUser } from "../api/auth";
 import useAxios from "../hooks/useAxios";
 import { mobile, tablet } from "../responsive";
 import { Wrapper } from "../styles/common";
@@ -35,7 +37,7 @@ const Language = styled.span`
   ${mobile({ display: "none" })}
 `;
 
-const SearchContainer = styled.div`
+const SearchContainer = styled.form`
   border: 0.5px solid lightgray;
   display: flex;
   align-items: center;
@@ -82,9 +84,18 @@ const MenuItem = styled.div`
 const Navbar = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
   const quantity = useSelector((state) => state.cart.quantity);
+  const [text, setText] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [api] = useAxios();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (text) {
+      getProducts(api, 1, dispatch, `&q=${text}`);
+      navigate("/products");
+    }
+  };
 
   return (
     <Container>
@@ -92,9 +103,16 @@ const Navbar = () => {
         <NavWrapper>
           <Left>
             <Language>EN</Language>
-            <SearchContainer>
-              <Input />
-              <Search style={{ color: "gray", cursor: "pointer" }} />
+            <SearchContainer onSubmit={handleSubmit}>
+              <Input
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="search"
+              />
+              <Search
+                onClick={handleSubmit}
+                style={{ color: "gray", cursor: "pointer" }}
+              />
             </SearchContainer>
           </Left>
           <Center>

@@ -10,7 +10,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import app from "../../firebase";
-import { updateUser } from "../../api/apiCall";
+import { updateUser } from "../../api/users";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 

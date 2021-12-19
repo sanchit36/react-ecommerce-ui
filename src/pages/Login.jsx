@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { authUser } from "../api/apiCall";
+import { authUser } from "../api/auth";
 import Navbar from "../components/Navbar";
 import useForm from "../hooks/useForm";
 import { Button } from "../styles/common";

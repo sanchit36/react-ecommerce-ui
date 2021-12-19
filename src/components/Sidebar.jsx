@@ -82,14 +82,14 @@ export default function Sidebar() {
                 Users
               </SidebarListItem>
             </Link>
-            <Link to="/dashboard/new-user">
+            {/* <Link to="/dashboard/new-user">
               <SidebarListItem>
                 <PermIdentity
                   style={{ marginRight: "5px", fontSize: "20px" }}
                 />
                 Add Users
               </SidebarListItem>
-            </Link>
+            </Link> */}
             <Link to="/dashboard/products">
               <SidebarListItem>
                 <Storefront style={{ marginRight: "5px", fontSize: "20px" }} />

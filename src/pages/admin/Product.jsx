@@ -3,7 +3,7 @@ import Chart from "../../components/chart/Chart";
 import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import ProductForm from "../../components/ProductForm";
-import { updateProduct } from "../../api/apiCall";
+import { updateProduct } from "../../api/products";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addUser } from "../../api/apiCall";
+import { addUser } from "../../api/users";
 import DashboardLayout from "../../layout/DashboardLayout";
 import "./newUser.css";
 import { useDispatch } from "react-redux";
