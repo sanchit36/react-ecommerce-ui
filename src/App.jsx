@@ -1,6 +1,3 @@
-import { useEffect, useState } from 'react';
-import { setUser } from './redux/authReducer';
-import { useDispatch } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,7 +11,7 @@ import DashboardNewProduct from './pages/admin/NewProduct';
 import DashboardUser from './pages/admin/User';
 import DashboardUserList from './pages/admin/UserList';
 import OrderList from './pages/admin/OrderList';
-import Order from './pages/admin/Order';
+import Order from './pages/admin/Order/order.component';
 
 // Client pages
 import Cart from './pages/Cart';
@@ -29,6 +26,10 @@ import Success from './pages/Success';
 import ProtectedRoute from './routes/ProtectedRoute';
 import PrivateRoute from './routes/PrivateRoute';
 import AdminRoute from './routes/AdminRoute';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { setUser } from 'redux/authReducer';
 
 axios.defaults.withCredentials = true;
 

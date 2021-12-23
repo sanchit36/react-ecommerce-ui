@@ -1,19 +1,19 @@
-import { Add, Remove } from "@material-ui/icons";
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import Layout from "../layout/Layout";
-import { Wrapper } from "../styles/common";
-import { mobile, tablet } from "../responsive";
-import { useParams } from "react-router";
+import { Add, Remove } from '@material-ui/icons';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import Layout from '../layout/MainLayout/main-layout.component';
+import { Wrapper } from '../styles/common';
+import { mobile, tablet } from '../responsive';
+import { useParams } from 'react-router';
 
-import { useDispatch } from "react-redux";
-import { addProductToCart } from "../redux/cartReducer";
-import useAxios from "../hooks/useAxios";
+import { useDispatch } from 'react-redux';
+import { addProductToCart } from '../redux/cartReducer';
+import useAxios from '../hooks/useAxios';
 
 const ProductWrapper = styled.div`
   padding: 50px 0px;
   display: flex;
-  ${mobile({ padding: "10px", flexDirection: "column" })}
+  ${mobile({ padding: '10px', flexDirection: 'column' })}
 `;
 
 const ImageContainer = styled.div`
@@ -24,14 +24,14 @@ const Image = styled.img`
   width: 100%;
   height: 80vh;
   object-fit: cover;
-  ${tablet({ height: "70vh" })}
-  ${mobile({ height: "40vh" })}
+  ${tablet({ height: '70vh' })}
+  ${mobile({ height: '40vh' })}
 `;
 
 const InfoContainer = styled.div`
   flex: 1;
   padding-left: 50px;
-  ${mobile({ padding: "10px" })}
+  ${mobile({ padding: '10px' })}
 `;
 
 const Title = styled.h1`
@@ -53,7 +53,7 @@ const FilterContainer = styled.div`
   margin: 30px 0px;
   display: flex;
   justify-content: space-between;
-  ${tablet({ width: "100%" })}
+  ${tablet({ width: '100%' })}
 `;
 
 const Filter = styled.div`
@@ -73,7 +73,7 @@ const FilterColor = styled.div`
   background-color: ${(props) => props.color};
   margin: 0px 5px;
   cursor: pointer;
-  border: ${(props) => (props.selected ? "2px solid teal" : "none")};
+  border: ${(props) => (props.selected ? '2px solid teal' : 'none')};
 `;
 
 const FilterSize = styled.select`
@@ -88,7 +88,7 @@ const AddContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  ${tablet({ width: "100%" })}
+  ${tablet({ width: '100%' })}
 `;
 
 const AmountContainer = styled.div`
@@ -125,25 +125,28 @@ const Product = () => {
   const { slug } = useParams();
   const [product, setProduct] = useState();
   const [quantity, setQuantity] = useState(1);
-  const [colorState, setColorState] = useState("");
-  const [size, setSize] = useState("");
+  const [colorState, setColorState] = useState('');
+  const [size, setSize] = useState('');
   const dispatch = useDispatch();
   const [api] = useAxios();
 
   useEffect(() => {
     const getProduct = async () => {
       try {
-        const response = await api.get("/products/" + slug);
+        const response = await api.get(`/products/${slug}`);
         setProduct(response.data);
         setSize(response.data.sizes[0].name);
         setColorState(response.data.colors[0].name);
-      } catch (e) {}
+      } catch (error) {
+        console.log('Error getting products', error);
+      }
     };
+
     getProduct();
-  }, [slug]);
+  }, [slug, api]);
 
   const handleQuantity = (type) => {
-    if (type === "dec") {
+    if (type === 'dec') {
       quantity > 1 && setQuantity(quantity - 1);
     } else {
       setQuantity(quantity + 1);
@@ -195,13 +198,13 @@ const Product = () => {
             <AddContainer>
               <AmountContainer>
                 <Remove
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleQuantity("dec")}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleQuantity('dec')}
                 />
                 <Amount>{quantity}</Amount>
                 <Add
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleQuantity("inc")}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleQuantity('inc')}
                 />
               </AmountContainer>
               <Button onClick={handleClick}>ADD TO CART</Button>

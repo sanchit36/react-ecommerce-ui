@@ -1,9 +1,9 @@
-import { useDispatch, useSelector } from "react-redux";
-import jwt_decode from "jwt-decode";
-import { setUser } from "../redux/authReducer";
-import axios from "axios";
-axios.defaults.withCredentials = true;
+import { useDispatch, useSelector } from 'react-redux';
+import jwt_decode from 'jwt-decode';
+import { setUser } from '../redux/authReducer';
+import axios from 'axios';
 
+axios.defaults.withCredentials = true;
 const useAxios = () => {
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -12,7 +12,7 @@ const useAxios = () => {
     baseURL: process.env.REACT_APP_BACKEND_URL,
     withCredentials: true,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 
@@ -41,7 +41,7 @@ const useAxios = () => {
         })
       );
 
-      config.headers.Authorization = "Bearer " + response.data.accessToken;
+      config.headers.Authorization = 'Bearer ' + response.data.accessToken;
       return config;
     },
     function (err) {

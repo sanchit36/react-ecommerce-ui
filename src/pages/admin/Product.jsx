@@ -1,13 +1,13 @@
-import DashboardLayout from "../../layout/DashboardLayout";
-import Chart from "../../components/chart/Chart";
-import { Link, useParams } from "react-router-dom";
-import styled from "styled-components";
-import ProductForm from "../../components/ProductForm";
-import { updateProduct } from "../../api/products";
-import { useEffect, useMemo, useState } from "react";
-import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
-import useAxios from "../../hooks/useAxios";
+import DashboardLayout from '../../layout/DashboardLayout';
+import Chart from '../../components/chart/Chart';
+import { Link, useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import ProductForm from '../../components/ProductForm';
+import { updateProduct } from '../../api/products';
+import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import useAxios from '../../hooks/useAxios';
 
 const Container = styled.div`
   flex: 4;
@@ -78,18 +78,18 @@ const Product = () => {
   const [pStats, setPStats] = useState([]);
   const MONTHS = useMemo(
     () => [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Agu",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ],
     []
   );
@@ -97,7 +97,7 @@ const Product = () => {
   useEffect(() => {
     const getStats = async () => {
       try {
-        const res = await api.get("orders/income?pid=" + product.id);
+        const res = await api.get('orders/income?pid=' + product.id);
         const list = res.data.sort((a, b) => {
           return a.id - b.id;
         });
@@ -118,7 +118,7 @@ const Product = () => {
   if (!product) return <h4>Something is wrong</h4>;
 
   const handleValues = (value) => {
-    return [...value.map((category) => category.name)].join(",");
+    return [...value.map((category) => category.name)].join(',');
   };
 
   return (
@@ -126,32 +126,32 @@ const Product = () => {
       <Container>
         <TitleContainer>
           <h1>Product</h1>
-          <Link to="/dashboard/new-product">
+          <Link to='/dashboard/new-product'>
             <Button>Create</Button>
           </Link>
         </TitleContainer>
         <Wrapper>
           <RightContainer>
             <div>
-              <Chart data={pStats} dataKey="Sales" title="Sales Performance" />
+              <Chart data={pStats} dataKey='Sales' title='Sales Performance' />
             </div>
             <Card>
-              <div style={{ display: "flex" }}>
+              <div style={{ display: 'flex' }}>
                 <div style={{ flex: 1 }}>
                   <h3>{product.title}</h3>
                   <Image src={product.image} alt={product.title} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ marginBottom: "20px" }}>
+                  <div style={{ marginBottom: '20px' }}>
                     <strong>ID:</strong> <p>{product.id}</p>
                   </div>
-                  <div style={{ marginBottom: "20px" }}>
+                  <div style={{ marginBottom: '20px' }}>
                     <strong>Price:</strong> <p>{product.price}</p>
                   </div>
-                  <div style={{ marginBottom: "20px" }}>
+                  <div style={{ marginBottom: '20px' }}>
                     <strong>Description:</strong> <p>{product.description}</p>
                   </div>
-                  <div style={{ marginBottom: "20px" }}>
+                  <div style={{ marginBottom: '20px' }}>
                     <strong>Categories:</strong>
                     <div>
                       {product.categories?.map((cat) => (
@@ -159,7 +159,7 @@ const Product = () => {
                       ))}
                     </div>
                   </div>
-                  <div style={{ marginBottom: "20px" }}>
+                  <div style={{ marginBottom: '20px' }}>
                     <strong>Colors:</strong>
                     <div>
                       {product.colors?.map((color) => (
@@ -168,7 +168,7 @@ const Product = () => {
                     </div>
                   </div>
                   {product.sizes?.length > 0 && (
-                    <div style={{ marginBottom: "20px" }}>
+                    <div style={{ marginBottom: '20px' }}>
                       <strong>Sizes:</strong>
                       <div>
                         {product.sizes?.map((size) => (
@@ -183,7 +183,7 @@ const Product = () => {
           </RightContainer>
           <LeftContainer>
             <ProductForm
-              buttonText="Update"
+              buttonText='Update'
               initialState={{
                 title: product.title,
                 description: product.description,
@@ -194,10 +194,10 @@ const Product = () => {
               }}
               fileUrl={product.image}
               onSubmit={(product, dispatch) => {
-                toast.promise(updateProduct(id, product, dispatch), {
-                  pending: "Trying to Update Product",
-                  success: "Product updated successfully",
-                  rejected: "Try again, something went wrong",
+                toast.promise(dispatch(updateProduct(api, id, product)), {
+                  pending: 'Trying to Update Product',
+                  success: 'Product updated successfully',
+                  error: 'Try again, something went wrong',
                 });
               }}
             />

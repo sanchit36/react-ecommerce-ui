@@ -1,11 +1,11 @@
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { authUser } from "../api/auth";
-import Navbar from "../components/Navbar";
-import useForm from "../hooks/useForm";
-import { Button } from "../styles/common";
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { authUser } from '../api/auth';
+import Navbar from '../components/Navbar/navbar.component';
+import useForm from '../hooks/useForm';
+import { Button } from '../styles/common';
 
 import {
   Container,
@@ -15,16 +15,16 @@ import {
   Input,
   Agreement,
   LinkStyle,
-} from "../styles/AuthForm";
-import useAxios from "../hooks/useAxios";
+} from '../styles/AuthForm';
+import useAxios from '../hooks/useAxios';
 
 const initialState = {
-  firstName: "",
-  lastName: "",
-  username: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
+  firstName: '',
+  lastName: '',
+  username: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
 };
 
 const Register = () => {
@@ -35,13 +35,13 @@ const Register = () => {
 
   const onSubmit = (values) => {
     if (values.password !== values.confirmPassword) {
-      return toast.error("Password do not match");
+      return toast.error('Password do not match');
     }
 
     toast.promise(
-      authUser(api, dispatch, "/auth/signup", values, () => navigate("/")),
+      dispatch(authUser(api, '/auth/signup', values, () => navigate('/'))),
       {
-        pending: "Trying to register...",
+        pending: 'Trying to register...',
         success: {
           render({ data }) {
             return `Welcome, ${data.user.firstName}`;
@@ -65,62 +65,62 @@ const Register = () => {
       <Container>
         <Wrapper>
           <Title>CREATE AN ACCOUNT</Title>
-          <Form direction="row" onSubmit={handleSubmit}>
+          <Form direction='row' onSubmit={handleSubmit}>
             <Input
-              label="First Name"
-              variant="outlined"
-              name="firstName"
+              label='First Name'
+              variant='outlined'
+              name='firstName'
               value={values.firstName}
               onChange={handleChange}
-              placeholder="first name"
+              placeholder='first name'
               required
             />
             <Input
-              label="Last Name"
-              variant="outlined"
-              name="lastName"
+              label='Last Name'
+              variant='outlined'
+              name='lastName'
               value={values.lastName}
               onChange={handleChange}
-              placeholder="last name"
+              placeholder='last name'
               required
             />
             <Input
-              label="Username"
-              variant="outlined"
-              name="username"
+              label='Username'
+              variant='outlined'
+              name='username'
               value={values.username}
               onChange={handleChange}
-              placeholder="username"
+              placeholder='username'
               required
             />
             <Input
-              label="Email"
-              variant="outlined"
-              name="email"
+              label='Email'
+              variant='outlined'
+              name='email'
               value={values.email}
               onChange={handleChange}
-              type="email"
-              placeholder="email"
+              type='email'
+              placeholder='email'
               required
             />
             <Input
-              label="Password"
-              variant="outlined"
-              name="password"
+              label='Password'
+              variant='outlined'
+              name='password'
               value={values.password}
               onChange={handleChange}
-              type="password"
-              placeholder="password"
+              type='password'
+              placeholder='password'
               required
             />
             <Input
-              label="Confirm Password"
-              variant="outlined"
-              name="confirmPassword"
+              label='Confirm Password'
+              variant='outlined'
+              name='confirmPassword'
               value={values.confirmPassword}
               onChange={handleChange}
-              type="password"
-              placeholder="confirm password"
+              type='password'
+              placeholder='confirm password'
               required
             />
             <Agreement>
@@ -128,14 +128,14 @@ const Register = () => {
               data in accordance with the <strong>PRIVACY POLICY</strong>
             </Agreement>
             <Button
-              type="submit"
+              type='submit'
               disabled={isFetching}
-              style={{ width: "40%" }}
+              style={{ width: '40%' }}
             >
               CREATE
             </Button>
           </Form>
-          <LinkStyle to="/login">ALREADY HAVE A ACCOUNT? LOGIN</LinkStyle>
+          <LinkStyle to='/login'>ALREADY HAVE A ACCOUNT? LOGIN</LinkStyle>
         </Wrapper>
       </Container>
     </>

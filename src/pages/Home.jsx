@@ -1,10 +1,10 @@
-import React from "react";
-import Categories from "../components/Categories";
-import Heading from "../components/Heading";
-import Layout from "../layout/Layout";
-import Products from "../components/Products";
-import Slider from "../components/Slider";
-import { Wrapper } from "../styles/common";
+import React from 'react';
+import Categories from '../components/Categories';
+import Heading from '../components/Heading';
+import Layout from '../layout/MainLayout/main-layout.component';
+import Products from '../components/Products';
+import Slider from '../components/Slider';
+import { Wrapper } from '../styles/common';
 
 const Home = () => {
   return (
@@ -12,7 +12,7 @@ const Home = () => {
       <Slider />
       <Categories />
       <Wrapper>
-        <Heading title="Featured Products" />
+        <Heading title='Featured Products' />
         <Products />
       </Wrapper>
     </Layout>

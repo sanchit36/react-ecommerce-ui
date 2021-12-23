@@ -1,18 +1,19 @@
-import { MailOutline, PermIdentity, Publish } from "@material-ui/icons";
-import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import DashboardLayout from "../../layout/DashboardLayout";
-import "./user.css";
+import { MailOutline, PermIdentity, Publish } from '@material-ui/icons';
+import { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import DashboardLayout from '../../layout/DashboardLayout';
+import './user.css';
 import {
   getStorage,
   ref,
   uploadBytesResumable,
   getDownloadURL,
-} from "firebase/storage";
-import app from "../../firebase";
-import { updateUser } from "../../api/users";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+} from 'firebase/storage';
+import app from '../../firebase';
+import { updateUser } from '../../api/users';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import useAxios from 'hooks/useAxios';
 
 const User = () => {
   const { id } = useParams();
@@ -29,7 +30,7 @@ const User = () => {
   });
 
   const [file, setFile] = useState(null);
-
+  const [api] = useAxios();
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -42,9 +43,9 @@ const User = () => {
     e.preventDefault();
 
     if (!file) {
-      toast.promise(updateUser(id, inputs, dispatch), {
-        pending: "Trying to update user",
-        success: "Updated successfully",
+      toast.promise(dispatch(updateUser(api, id, inputs)), {
+        pending: 'Trying to update user',
+        success: 'Updated successfully',
         error: {
           render: ({ data }) => {
             return `${data.message}`;
@@ -60,17 +61,17 @@ const User = () => {
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(
-      "state_changed",
+      'state_changed',
       (snapshot) => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
+        console.log('Upload is ' + progress + '% done');
         switch (snapshot.state) {
-          case "paused":
-            console.log("Upload is paused");
+          case 'paused':
+            console.log('Upload is paused');
             break;
-          case "running":
-            console.log("Upload is running");
+          case 'running':
+            console.log('Upload is running');
             break;
           default:
         }
@@ -84,9 +85,9 @@ const User = () => {
             ...inputs,
             image: downloadURL,
           };
-          toast.promise(updateUser(id, user, dispatch), {
-            pending: "Trying to update user",
-            success: "Updated successfully",
+          toast.promise(dispatch(updateUser(api, id, user)), {
+            pending: 'Trying to update user',
+            success: 'Updated successfully',
             error: {
               render: ({ data }) => {
                 return `${data.message}`;
@@ -100,115 +101,115 @@ const User = () => {
 
   return (
     <DashboardLayout>
-      <div className="user">
-        <div className="userTitleContainer">
-          <h1 className="userTitle">Edit User</h1>
-          <Link to="/dashboard/new-user">
-            <button className="userAddButton">Create</button>
+      <div className='user'>
+        <div className='userTitleContainer'>
+          <h1 className='userTitle'>Edit User</h1>
+          <Link to='/dashboard/new-user'>
+            <button className='userAddButton'>Create</button>
           </Link>
         </div>
-        <div className="userContainer">
-          <div className="userShow">
-            <div className="userShowTop">
+        <div className='userContainer'>
+          <div className='userShow'>
+            <div className='userShowTop'>
               <img
                 src={user.image}
                 alt={user.username}
-                className="userShowImg"
+                className='userShowImg'
               />
-              <div className="userShowTopTitle">
-                <span className="userShowUsername">{user.username}</span>
-                <span className="userShowUserTitle">{user.fullname}</span>
+              <div className='userShowTopTitle'>
+                <span className='userShowUsername'>{user.username}</span>
+                <span className='userShowUserTitle'>{user.fullname}</span>
               </div>
             </div>
-            <div className="userShowBottom">
-              <span className="userShowTitle">Account Details</span>
-              <div className="userShowInfo">
-                <PermIdentity className="userShowIcon" />
-                <span className="userShowInfoTitle">{user.username}</span>
+            <div className='userShowBottom'>
+              <span className='userShowTitle'>Account Details</span>
+              <div className='userShowInfo'>
+                <PermIdentity className='userShowIcon' />
+                <span className='userShowInfoTitle'>{user.username}</span>
               </div>
-              <div className="userShowInfo">
-                <PermIdentity className="userShowIcon" />
-                <span className="userShowInfoTitle">{user.firstName}</span>
+              <div className='userShowInfo'>
+                <PermIdentity className='userShowIcon' />
+                <span className='userShowInfoTitle'>{user.firstName}</span>
               </div>
-              <div className="userShowInfo">
-                <PermIdentity className="userShowIcon" />
-                <span className="userShowInfoTitle">{user.lastName}</span>
+              <div className='userShowInfo'>
+                <PermIdentity className='userShowIcon' />
+                <span className='userShowInfoTitle'>{user.lastName}</span>
               </div>
-              <span className="userShowTitle">Contact Details</span>
-              <div className="userShowInfo">
-                <MailOutline className="userShowIcon" />
-                <span className="userShowInfoTitle">{user.email}</span>
+              <span className='userShowTitle'>Contact Details</span>
+              <div className='userShowInfo'>
+                <MailOutline className='userShowIcon' />
+                <span className='userShowInfoTitle'>{user.email}</span>
               </div>
             </div>
           </div>
-          <div className="userUpdate">
-            <span className="userUpdateTitle">Edit</span>
-            <form className="userUpdateForm">
-              <div className="userUpdateLeft">
-                <div className="userUpdateItem">
+          <div className='userUpdate'>
+            <span className='userUpdateTitle'>Edit</span>
+            <form className='userUpdateForm'>
+              <div className='userUpdateLeft'>
+                <div className='userUpdateItem'>
                   <label>Username</label>
                   <input
-                    name="username"
+                    name='username'
                     value={inputs.username}
                     onChange={handleChange}
-                    type="text"
-                    placeholder="annabeck99"
-                    className="userUpdateInput"
+                    type='text'
+                    placeholder='annabeck99'
+                    className='userUpdateInput'
                   />
                 </div>
-                <div className="userUpdateItem">
+                <div className='userUpdateItem'>
                   <label>First Name</label>
                   <input
-                    name="firstName"
+                    name='firstName'
                     value={inputs.firstName}
                     onChange={handleChange}
-                    type="text"
-                    placeholder="Anna"
-                    className="userUpdateInput"
+                    type='text'
+                    placeholder='Anna'
+                    className='userUpdateInput'
                   />
                 </div>
-                <div className="userUpdateItem">
+                <div className='userUpdateItem'>
                   <label>Last Name</label>
                   <input
-                    name="lastName"
+                    name='lastName'
                     value={inputs.lastName}
                     onChange={handleChange}
-                    type="text"
-                    placeholder="Becker"
-                    className="userUpdateInput"
+                    type='text'
+                    placeholder='Becker'
+                    className='userUpdateInput'
                   />
                 </div>
-                <div className="userUpdateItem">
+                <div className='userUpdateItem'>
                   <label>Email</label>
                   <input
-                    name="email"
+                    name='email'
                     value={inputs.email}
                     onChange={handleChange}
-                    type="text"
-                    placeholder="annabeck99@gmail.com"
-                    className="userUpdateInput"
+                    type='text'
+                    placeholder='annabeck99@gmail.com'
+                    className='userUpdateInput'
                   />
                 </div>
               </div>
-              <div className="userUpdateRight">
-                <div className="userUpdateUpload">
+              <div className='userUpdateRight'>
+                <div className='userUpdateUpload'>
                   <img
-                    className="userUpdateImg"
+                    className='userUpdateImg'
                     src={inputs.image}
                     alt={inputs.username}
                   />
-                  <label htmlFor="file">
-                    <Publish className="userUpdateIcon" />
+                  <label htmlFor='file'>
+                    <Publish className='userUpdateIcon' />
                   </label>
 
                   <input
-                    type="file"
-                    id="file"
-                    style={{ display: "none" }}
+                    type='file'
+                    id='file'
+                    style={{ display: 'none' }}
                     onChange={(e) => setFile(e.target.files[0])}
                   />
                 </div>
-                <button onClick={handleSubmit} className="userUpdateButton">
+                <button onClick={handleSubmit} className='userUpdateButton'>
                   Update
                 </button>
               </div>

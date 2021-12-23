@@ -1,32 +1,32 @@
-import { Add, Close, Remove } from "@material-ui/icons";
-import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
-import Layout from "../layout/Layout";
-import { tablet } from "../responsive";
-import StripeCheckout from "react-stripe-checkout";
-import { useState } from "react";
+import { Add, Close, Remove } from '@material-ui/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
+import Layout from '../layout/MainLayout/main-layout.component';
+import { tablet } from '../responsive';
+import StripeCheckout from 'react-stripe-checkout';
+import { useState } from 'react';
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
 import {
   FormControl,
   IconButton,
   InputAdornment,
   InputLabel,
   OutlinedInput,
-} from "@material-ui/core";
+} from '@material-ui/core';
 
 import {
   addProductToCart,
   removeProductFromCart,
   resetCart,
-} from "../redux/cartReducer";
-import useAxios from "../hooks/useAxios";
+} from '../redux/cartReducer';
+import useAxios from '../hooks/useAxios';
 
 const KEY = process.env.REACT_APP_STRIPE;
 
 const Wrapper = styled.div`
   padding: 20px;
-  ${tablet({ padding: "10px" })}
+  ${tablet({ padding: '10px' })}
 `;
 
 const Title = styled.h1`
@@ -45,16 +45,16 @@ const TopButton = styled.button`
   padding: 10px;
   font-weight: 600;
   cursor: pointer;
-  border: ${(props) => props.type === "1px solid black" && "none"};
+  border: ${(props) => props.type === '1px solid black' && 'none'};
   background-color: ${(props) =>
-    props.type === "filled" ? "black" : "transparent"};
-  color: ${(props) => props.type === "filled" && "white"};
+    props.type === 'filled' ? 'black' : 'transparent'};
+  color: ${(props) => props.type === 'filled' && 'white'};
 `;
 
 const Bottom = styled.div`
   display: flex;
   justify-content: space-between;
-  ${tablet({ flexDirection: "column" })}
+  ${tablet({ flexDirection: 'column' })}
 `;
 
 const Info = styled.div`
@@ -64,7 +64,7 @@ const Info = styled.div`
 const Product = styled.div`
   display: flex;
   justify-content: space-between;
-  ${tablet({ flexDirection: "column" })}
+  ${tablet({ flexDirection: 'column' })}
 `;
 
 const ProductDetail = styled.div`
@@ -113,13 +113,13 @@ const ProductAmountContainer = styled.div`
 const ProductAmount = styled.div`
   font-size: 24px;
   margin: 5px;
-  ${tablet({ margin: "5px 15px" })}
+  ${tablet({ margin: '5px 15px' })}
 `;
 
 const ProductPrice = styled.div`
   font-size: 30px;
   font-weight: 200;
-  ${tablet({ marginBottom: "20px" })}
+  ${tablet({ marginBottom: '20px' })}
 `;
 
 const Hr = styled.hr`
@@ -144,8 +144,8 @@ const SummaryItem = styled.div`
   margin: 30px 0px;
   display: flex;
   justify-content: space-between;
-  font-weight: ${(props) => props.type === "total" && "500"};
-  font-size: ${(props) => props.type === "total" && "24px"};
+  font-weight: ${(props) => props.type === 'total' && '500'};
+  font-size: ${(props) => props.type === 'total' && '24px'};
 `;
 
 const SummaryItemText = styled.span``;
@@ -164,7 +164,7 @@ const Button = styled.button`
 const Cart = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
   const cart = useSelector((state) => state.cart);
-  const [coupon, setCoupon] = useState("");
+  const [coupon, setCoupon] = useState('');
   const [isValid, setIsValid] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -172,7 +172,7 @@ const Cart = () => {
 
   const createOrder = async (address) => {
     try {
-      const res = await api.post("/orders", {
+      const res = await api.post('/orders', {
         user: currentUser.id,
         products: cart.products.map((item) => ({
           product: item.id,
@@ -191,18 +191,18 @@ const Cart = () => {
 
   const onToken = async (token) => {
     try {
-      const stripRes = await api.post("/checkout/payment", {
+      const stripRes = await api.post('/checkout/payment', {
         tokenId: token.id,
         amount: cart.total * 100,
       });
       const orderId = await createOrder(stripRes.data.billing_details.address);
       if (orderId) {
-        navigate("/success", { state: { orderId } });
+        navigate('/success', { state: { orderId } });
         dispatch(resetCart());
       }
     } catch (e) {
       console.log(e.message);
-      navigate("/error", { state: { errorMessage: "Something went wrong" } });
+      navigate('/error', { state: { errorMessage: 'Something went wrong' } });
     }
   };
 
@@ -211,7 +211,7 @@ const Cart = () => {
       <Wrapper>
         <Title>YOUR BAG</Title>
         <Top>
-          <Link to="/products">
+          <Link to='/products'>
             <TopButton>CONTINUE SHOPPING</TopButton>
           </Link>
         </Top>
@@ -266,15 +266,15 @@ const Cart = () => {
               <SummaryItemText>Shipping Discount</SummaryItemText>
               <SummaryItemPrice>$ -0.00</SummaryItemPrice>
             </SummaryItem>
-            <SummaryItem type="total">
+            <SummaryItem type='total'>
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
 
             {cart.total > 0 && (
               <StripeCheckout
-                name="Ecommerce Shop"
-                image="https://avatars.githubusercontent.com/u/1486366?v=4"
+                name='Ecommerce Shop'
+                image='https://avatars.githubusercontent.com/u/1486366?v=4'
                 billingAddress
                 shippingAddress
                 description={`Your total is $${cart.total}`}
@@ -288,23 +288,23 @@ const Cart = () => {
 
             <FormControl
               fullWidth
-              variant="outlined"
-              style={{ margin: "20px 0 10px" }}
+              variant='outlined'
+              style={{ margin: '20px 0 10px' }}
             >
-              <InputLabel htmlFor="apply-coupon">Apply Coupon</InputLabel>
+              <InputLabel htmlFor='apply-coupon'>Apply Coupon</InputLabel>
               <OutlinedInput
-                id="apply-coupon"
+                id='apply-coupon'
                 value={coupon}
                 onChange={(e) => setCoupon(e.target.value)}
-                type="text"
+                type='text'
                 required
                 endAdornment={
                   isValid ? (
-                    <InputAdornment position="end">
+                    <InputAdornment position='end'>
                       <IconButton
                         onClick={() => {
                           setIsValid(false);
-                          setCoupon("");
+                          setCoupon('');
                         }}
                       >
                         <Close />
